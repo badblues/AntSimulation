@@ -1,2 +1,4 @@
-package com.antsim;public interface IBehavior {
+package com.antsim;
+
+public interface IBehavior {
 }
