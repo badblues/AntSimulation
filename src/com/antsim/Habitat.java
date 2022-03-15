@@ -84,6 +84,7 @@ public class Habitat extends Application {
                     }
                 }
             });
+            
             stage.show();
 
         } catch (Exception e) {

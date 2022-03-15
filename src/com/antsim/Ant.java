@@ -4,7 +4,7 @@ import javafx.scene.Group;
 
 import java.util.Random;
 
-public abstract class Ant extends Group implements IBehavior {
+public abstract class Ant implements IBehavior {
     int posX;
     int posY;
 

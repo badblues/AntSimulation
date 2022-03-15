@@ -20,10 +20,4 @@ public class AntWarrior extends Ant implements IBehavior {
         this.root = root;
     }
 
-
-    protected void finalize() throws Throwable {
-        super.finalize();
-        root.getChildren().remove(antWarriorImageView);
-        System.out.println("biba");
-    }
 }
