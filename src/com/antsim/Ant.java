@@ -10,8 +10,9 @@ public abstract class Ant implements IBehavior {
 
     Ant() {
         Random rand = new Random();
-        posX = rand.nextInt(520);
-        posY = rand.nextInt(520);
+        posX = rand.nextInt(500) + 200;
+        posY = rand.nextInt(500);
     }
+
     abstract void spawn(Group root);
 }

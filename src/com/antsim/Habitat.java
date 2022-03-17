@@ -3,11 +3,16 @@ package com.antsim;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -19,23 +24,32 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-//TODO simulation pause with continuation
-//TODO format text
+//TODO simulation pause with continuation --------
+//TODO singleton
+//TODO divide window by two areas --------
+//TODO add Start and Stop buttons
+//TODO add switch Show info
+//TODO add group of two exclusive switches Show sim time and Hide sim time
+//TODO add main menu and tool panel
+//TODO add modal dialog window with info about generated objects and time, window has 2 buttons OK and Cancel
+//TODo add control elements spawn delay and spawn chance
 
 
 public class Habitat extends Application {
 
     static final int antWarriorSpawnChance = 50; // percents
     static final int antWorkerSpawnChance = 50; // percents
-    static final int antWarriorSpawnDelay = 2; // seconds
+    static final int antWarriorSpawnDelay = 3; // seconds
     static final int antWorkerSpawnDelay = 1; // seconds
     ArrayList<Ant> antsArray = new ArrayList<Ant>();
     int antWarriorCount = 0;
     int antWorkerCount = 0;
-    boolean isWorking = false;
     int time;
     Group root = new Group();
+    Scene scene = new Scene(root, 740, 540);
     Text timeText = new Text("Simulation time:   ");
+    Text statisticText = new Text("");
+    Timer timer;
 
 
     public static void main(String[] args) {
@@ -46,37 +60,19 @@ public class Habitat extends Application {
     public void start(Stage stage) throws Exception {
         try {
 
-            Color background = new Color(0.1, 0.5, 0.05, 1);
-            Scene scene = new Scene(root, 540, 540, background);
-            stage.setScene(scene);
-            stage.setResizable(false);
-            stage.setTitle("AntSimulation");
-            Image icon = new Image("resources/icon_ant.jpg");
-            stage.getIcons().add(icon);
-            root.getChildren().add(timeText);
-            timeText.setX(220);
-            timeText.setY(20);
-            timeText.setFont(Font.font("Verdana"));
-            timeText.setFill(Color.WHITE);
-            timeText.setVisible(false);
-
-            Timer timer = new Timer();
+            stageSetUp(stage);
 
             scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
                 @Override
                 public void handle(KeyEvent keyEvent) {
                     switch (keyEvent.getCode()) {
                         case B:
-                            if (!isWorking) {
-                                startTimer(timer);
-                                isWorking = true;
-                            }
+                            timer = startTimer();
+                            statisticText.setVisible(false);
                             break;
                         case E:
-                            if (isWorking) {
-                                timer.cancel();
-                                showStatistic();
-                            }
+                            endTimer();
+                            showStatistic();
                             break;
                         case T:
                             timeText.setVisible(!timeText.isVisible());
@@ -84,9 +80,7 @@ public class Habitat extends Application {
                     }
                 }
             });
-            
             stage.show();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -106,15 +100,15 @@ public class Habitat extends Application {
             antsArray.add(a);
             antWorkerCount += 1;
         }
-
         time = tick;
         timeText.setText("Simulation time: " + time + "s");
     }
 
-    private void startTimer(Timer timer) {
+    private Timer startTimer(){
+        endTimer();
+        timer = new Timer();
         timer.schedule(new TimerTask() {
-            int tick = 0;
-
+            int tick = time;
             @Override
             public void run() {
                 Platform.runLater(new Runnable() {
@@ -125,15 +119,54 @@ public class Habitat extends Application {
                     }
                 });
             }
-        }, 0, 1000);
+        }, 1000, 1000);
+        return timer;
+    }
+
+    private void endTimer() {
+        if (timer != null)
+            timer.cancel();
     }
 
     private void showStatistic() {
-        Text antCounter = new Text("STATISTICS:\nSimulation time: " + time + "s\nWorkers born: " + antWorkerCount + "\nWarriors born: " + antWarriorCount);
-        antCounter.setFont(Font.font("Verdana"));
-        antCounter.setFill(Color.WHITE);
-        antCounter.setX(400);
-        antCounter.setY(240);
-        root.getChildren().add(antCounter);
+        statisticText.setText("STATISTICS\nSimulation time: " + time + "s\nWorkers born: " + antWorkerCount + "\nWarriors born :" + antWarriorCount);
+        statisticText.setVisible(true);
+    }
+
+    private void stageSetUp(Stage stage) {
+        scene.setFill(new Color(0.63, 0.39, 0.24, 1));
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.setTitle("AntSimulation");
+        Image icon = new Image("resources/icon_ant.jpg");
+        stage.getIcons().add(icon);
+
+        root.getChildren().add(timeText);
+        timeText.setX(370);
+        timeText.setY(20);
+        timeText.setFont(Font.font("Verdana"));
+        timeText.setFill(Color.WHITE);
+        timeText.setVisible(false);
+
+        root.getChildren().add(statisticText);
+        statisticText.setX(600);
+        statisticText.setY(270);
+        statisticText.setFont(Font.font("Verdana"));
+        statisticText.setFill(Color.WHITE);
+        statisticText.setVisible(false);
+
+        Rectangle area = new Rectangle(0, 0, 200, 540);
+        area.setFill(Color.GREY);
+        root.getChildren().add(area);
+
+        Button startButton = new Button();
+        startButton.setText("Start");
+        startButton.setLayoutX(50);
+        startButton.setLayoutY(50);
+        startButton.setOnAction(actionEvent ->  {
+            timer = startTimer();
+            statisticText.setVisible(false);
+        });
+        root.getChildren().add(startButton);
     }
 }
