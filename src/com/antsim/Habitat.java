@@ -8,6 +8,8 @@ import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
@@ -141,26 +143,25 @@ public class Habitat extends Application {
         Image icon = new Image("resources/icon_ant.jpg");
         stage.getIcons().add(icon);
 
-        root.getChildren().add(timeText);
         timeText.setX(370);
         timeText.setY(20);
         timeText.setFont(Font.font("Verdana"));
         timeText.setFill(Color.WHITE);
         timeText.setVisible(false);
+        root.getChildren().add(timeText);
 
-        root.getChildren().add(statisticText);
         statisticText.setX(600);
         statisticText.setY(270);
         statisticText.setFont(Font.font("Verdana"));
         statisticText.setFill(Color.WHITE);
         statisticText.setVisible(false);
+        root.getChildren().add(statisticText);
 
         Rectangle area = new Rectangle(0, 0, 200, 540);
         area.setFill(Color.GREY);
         root.getChildren().add(area);
 
-        Button startButton = new Button();
-        startButton.setText("Start");
+        Button startButton = new Button("Start");
         startButton.setLayoutX(50);
         startButton.setLayoutY(50);
         startButton.setOnAction(actionEvent ->  {
@@ -168,5 +169,35 @@ public class Habitat extends Application {
             statisticText.setVisible(false);
         });
         root.getChildren().add(startButton);
+
+        Button stopButton = new Button("Stop");
+        stopButton.setLayoutX(100);
+        stopButton.setLayoutY(50);
+        stopButton.setOnAction(actionEvent -> {
+            endTimer();
+            showStatistic();
+        });
+        root.getChildren().add(stopButton);
+
+        ToggleGroup timeButtonsGroup = new ToggleGroup();
+
+        RadioButton showTimeButton = new RadioButton("Show time");
+        showTimeButton.setLayoutX(30);
+        showTimeButton.setLayoutY(100);
+        showTimeButton.setOnAction(actionEvent -> {
+            timeText.setVisible(!timeText.isVisible());
+        });
+        showTimeButton.setToggleGroup(timeButtonsGroup);
+        root.getChildren().add(showTimeButton);
+
+        RadioButton hideTimeButton = new RadioButton("Hide time");
+        hideTimeButton.setLayoutX(30);
+        hideTimeButton.setLayoutY(120);
+        hideTimeButton.setOnAction(actionEvent -> {
+            timeText.setVisible(!timeText.isVisible());
+        });
+        hideTimeButton.setToggleGroup(timeButtonsGroup);
+        hideTimeButton.setSelected(true);
+        root.getChildren().add(hideTimeButton);
     }
 }
