@@ -15,4 +15,5 @@ public abstract class Ant implements IBehavior {
     }
 
     abstract void spawn(Group root);
+    abstract void destroyImage();
 }

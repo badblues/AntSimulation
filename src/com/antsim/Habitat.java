@@ -18,16 +18,9 @@ import javafx.stage.Stage;
 
 import java.util.*;
 
-//TODO simulation pause with continuation --------
+//TODO menu bar
 //TODO singleton
-//TODO divide window by two areas --------
-//TODO add Start and Stop buttons --------
-//TODO add switch Show info
-//TODO add group of two exclusive switches Show sim time and Hide sim time --------
-//TODO add main menu and tool panel --------
-//TODO add modal dialog window with info about generated objects and time, window has 2 buttons OK and Cancel
-//TODo add control elements spawn delay and spawn chance
-
+//TODO add control elements spawn delay and spawn chance
 
 public class Habitat extends Application {
 
@@ -43,6 +36,8 @@ public class Habitat extends Application {
     Scene scene = new Scene(root, 740, 540);
     Text timeText = new Text("Simulation time:   ");
     Text statisticText = new Text("");
+    Button startButton = new Button("Start");
+    Button stopButton = new Button("Stop");
     Timer timer;
 
 
@@ -59,12 +54,12 @@ public class Habitat extends Application {
                 public void handle(KeyEvent keyEvent) {
                     switch (keyEvent.getCode()) {
                         case B:
-                            timer = startTimer();
+                            timer = continueTimer();
                             statisticText.setVisible(false);
                             break;
                         case E:
                             endTimer();
-                            //showStatistic();
+                            showStatistic();
                             break;
                         case T:
                             timeText.setVisible(!timeText.isVisible());
@@ -96,8 +91,11 @@ public class Habitat extends Application {
         timeText.setText("Simulation time: " + time + "s");
     }
 
-    private Timer startTimer(){
-        endTimer();
+    private Timer continueTimer(){
+        stopButton.setDisable(false);
+        startButton.setDisable(true);
+        if (timer != null)
+            timer.cancel();
         timer = new Timer();
         timer.schedule(new TimerTask() {
             int tick = time;
@@ -116,8 +114,18 @@ public class Habitat extends Application {
     }
 
     private void endTimer() {
+        stopButton.setDisable(true);
+        startButton.setDisable(false);
         if (timer != null)
             timer.cancel();
+    }
+
+    private void endSimulation() {
+        for (Ant ant : antsArray) {
+            ant.destroyImage();
+        }
+        antsArray.clear();
+        time = 0;
     }
 
     private void showStatistic() {
@@ -133,7 +141,7 @@ public class Habitat extends Application {
         alert.setContentText("End simulation?");
         Optional<ButtonType> option = alert.showAndWait();
         if (option.get() == ButtonType.CANCEL)
-            startTimer();
+            continueTimer();
         button.setSelected(false);
     }
 
@@ -159,29 +167,24 @@ public class Habitat extends Application {
         statisticText.setVisible(false);
         root.getChildren().add(statisticText);
 
+
         Rectangle area = new Rectangle(0, 0, 200, 540);
         area.setFill(Color.GREY);
         root.getChildren().add(area);
 
-        Button startButton = new Button("Start");
-        Button stopButton = new Button("Stop");
-
         startButton.setLayoutX(50);
         startButton.setLayoutY(50);
         startButton.setOnAction(actionEvent ->  {
-            timer = startTimer();
+            timer = continueTimer();
             statisticText.setVisible(false);
-            startButton.setDisable(true);
-            stopButton.setDisable(false);
         });
         root.getChildren().add(startButton);
 
         stopButton.setLayoutX(100);
         stopButton.setLayoutY(50);
+        stopButton.setDisable(true);
         stopButton.setOnAction(actionEvent -> {
             endTimer();
-            stopButton.setDisable(true);
-            startButton.setDisable(false);
             //showStatistic();
         });
         root.getChildren().add(stopButton);
@@ -243,14 +246,5 @@ public class Habitat extends Application {
         text2.setLayoutX(30);
         text2.setLayoutY(230);
         root.getChildren().add(text2);
-
-        Slider antWarriorTimeToSpawn = new Slider();
-        antWarriorTimeToSpawn.setMin(1);
-        antWarriorTimeToSpawn.setMax(100);
-        antWarriorTimeToSpawn.setMinorTickCount(1);
-        antWarriorTimeToSpawn.setOnDragDone(dragEvent -> {
-            antWarriorSpawnDelay = (int) antWarriorTimeToSpawn.getValue();
-        });
-        root.getChildren().add(antWarriorTimeToSpawn);
     }
 }
