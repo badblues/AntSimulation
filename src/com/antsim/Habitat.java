@@ -21,6 +21,7 @@ import java.util.*;
 //TODO menu bar
 //TODO singleton
 //TODO add control elements spawn delay and spawn chance
+//TODO MVC javafx
 
 public class Habitat extends Application {
 
@@ -31,7 +32,7 @@ public class Habitat extends Application {
     ArrayList<Ant> antsArray = new ArrayList<Ant>();
     int antWarriorCount = 0;
     int antWorkerCount = 0;
-    int time;
+    int time = 0;
     Group root = new Group();
     Scene scene = new Scene(root, 740, 540);
     Text timeText = new Text("Simulation time:   ");
@@ -53,17 +54,16 @@ public class Habitat extends Application {
                 @Override
                 public void handle(KeyEvent keyEvent) {
                     switch (keyEvent.getCode()) {
-                        case B:
+                        case B -> {
                             timer = continueTimer();
                             statisticText.setVisible(false);
-                            break;
-                        case E:
+                        }
+                        case E -> {
                             endTimer();
+                            updateStatisticsText();
                             showStatistic();
-                            break;
-                        case T:
-                            timeText.setVisible(!timeText.isVisible());
-                            break;
+                        }
+                        case T -> timeText.setVisible(!timeText.isVisible());
                     }
                 }
             });
@@ -88,10 +88,10 @@ public class Habitat extends Application {
             antWorkerCount += 1;
         }
         time = tick;
-        timeText.setText("Simulation time: " + time + "s");
+        updateTimeText();
     }
 
-    private Timer continueTimer(){
+    private Timer continueTimer() {
         stopButton.setDisable(false);
         startButton.setDisable(true);
         if (timer != null)
@@ -99,6 +99,7 @@ public class Habitat extends Application {
         timer = new Timer();
         timer.schedule(new TimerTask() {
             int tick = time;
+
             @Override
             public void run() {
                 Platform.runLater(new Runnable() {
@@ -125,23 +126,36 @@ public class Habitat extends Application {
             ant.destroyImage();
         }
         antsArray.clear();
+        antWarriorCount = 0;
+        antWorkerCount = 0;
         time = 0;
+        updateTimeText();
+        updateStatisticsText();
     }
 
     private void showStatistic() {
-        statisticText.setText("STATISTICS\nSimulation time: " + time + "s\nWorkers born: " + antWorkerCount + "\nWarriors born :" + antWarriorCount);
         statisticText.setVisible(true);
+    }
+
+    private void updateStatisticsText() {
+        statisticText.setText("STATISTICS\nSimulation time: " + time +
+                "s\nWorkers born: " + antWorkerCount + "\nWarriors born :" + antWarriorCount);
+    }
+
+    private void updateTimeText() {
+        timeText.setText("Simulation time: " + time + "s");
     }
 
     private void showInfo(CheckBox button) {
         endTimer();
-        Alert alert =  new Alert(Alert.AlertType.CONFIRMATION);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("STATISTICS");
-        alert.setHeaderText("Simulation time: " + time + "s\nWorkers born: " + antWorkerCount + "\nWarriors born :" + antWarriorCount);
+        alert.setHeaderText("Simulation time: " + time +
+                "s\nWorkers born: " + antWorkerCount + "\nWarriors born :" + antWarriorCount);
         alert.setContentText("End simulation?");
         Optional<ButtonType> option = alert.showAndWait();
-        if (option.get() == ButtonType.CANCEL)
-            continueTimer();
+        if (option.get() == ButtonType.OK)
+            endSimulation();
         button.setSelected(false);
     }
 
@@ -174,7 +188,7 @@ public class Habitat extends Application {
 
         startButton.setLayoutX(50);
         startButton.setLayoutY(50);
-        startButton.setOnAction(actionEvent ->  {
+        startButton.setOnAction(actionEvent -> {
             timer = continueTimer();
             statisticText.setVisible(false);
         });
@@ -185,7 +199,6 @@ public class Habitat extends Application {
         stopButton.setDisable(true);
         stopButton.setOnAction(actionEvent -> {
             endTimer();
-            //showStatistic();
         });
         root.getChildren().add(stopButton);
 
@@ -209,7 +222,7 @@ public class Habitat extends Application {
         hideTimeButton.setToggleGroup(timeButtonsGroup);
         hideTimeButton.setSelected(true);
         root.getChildren().add(hideTimeButton);
-        
+
         CheckBox showInfoButton = new CheckBox("Show info");
         showInfoButton.setLayoutX(30);
         showInfoButton.setLayoutY(140);
@@ -218,7 +231,8 @@ public class Habitat extends Application {
         });
         root.getChildren().add(showInfoButton);
 
-        ObservableList<String> chances = FXCollections.observableArrayList("0", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100");
+        ObservableList<String> chances = FXCollections.observableArrayList(
+                "0", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100");
         ComboBox<String> antWarriorSpawnChanceBox = new ComboBox<String>(chances);
         antWarriorSpawnChanceBox.setValue("50");
         antWarriorSpawnChanceBox.setOnAction(event -> {
