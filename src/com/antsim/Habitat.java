@@ -2,6 +2,8 @@ package com.antsim;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -9,6 +11,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -18,7 +21,6 @@ import javafx.stage.Stage;
 
 import java.util.*;
 
-//TODO add control elements spawn delay and spawn chance
 //TODO MVC javafx
 
 public class Habitat extends Application {
@@ -29,10 +31,14 @@ public class Habitat extends Application {
     static int antWorkerSpawnChance = 50; // percents
     static int antWarriorSpawnDelay = 1; // seconds
     static int antWorkerSpawnDelay = 1; // seconds
+    final int MAX_SPAWN_DELAY = 15;
+    final int MIN_SPAWN_DELAY = 1;
     ArrayList<Ant> antsArray = new ArrayList<Ant>();
     int antWarriorCount = 0;
     int antWorkerCount = 0;
     int time = 0;
+    int timeToAntWarriorSpawn = antWarriorSpawnDelay;
+    int timeToAntWorkerSpawn = antWorkerSpawnDelay;
     Group root = new Group();
     Scene scene = new Scene(root, 740, 540);
     Text timeText = new Text("Simulation time:   ");
@@ -80,17 +86,21 @@ public class Habitat extends Application {
 
     private void update(int tick) {
         Random rand = new Random();
-        if (tick % antWarriorSpawnDelay == 0 && rand.nextInt(100) < antWarriorSpawnChance) {
+        timeToAntWarriorSpawn--;
+        timeToAntWorkerSpawn--;
+        if (timeToAntWarriorSpawn == 0 && rand.nextInt(100) < antWarriorSpawnChance) {
             AntWarrior a = new AntWarrior();
             a.spawn(root);
             antsArray.add(a);
             antWarriorCount += 1;
+            timeToAntWarriorSpawn = antWarriorSpawnDelay;
         }
-        if (tick % antWorkerSpawnDelay == 0 && rand.nextInt(100) < antWorkerSpawnChance) {
+        if (timeToAntWorkerSpawn == 0 && rand.nextInt(100) < antWorkerSpawnChance) {
             AntWorker a = new AntWorker();
             a.spawn(root);
             antsArray.add(a);
             antWorkerCount += 1;
+            timeToAntWorkerSpawn = antWorkerSpawnDelay;
         }
         time = tick;
         updateTimeText();
@@ -165,6 +175,15 @@ public class Habitat extends Application {
         if (option.get() == ButtonType.OK)
             endSimulation();
         button.setSelected(false);
+    }
+
+    private void showInvalidValueError() {
+        Alert error = new Alert(Alert.AlertType.ERROR);
+        error.setTitle("Error");
+        error.setHeaderText("Invalid value");
+        error.setContentText("Choose value between " + MIN_SPAWN_DELAY +
+                " and " + MAX_SPAWN_DELAY);
+        error.show();
     }
 
     private void stageSetUp(Stage stage) {
@@ -268,6 +287,87 @@ public class Habitat extends Application {
         text2.setLayoutX(30);
         text2.setLayoutY(230);
         root.getChildren().add(text2);
+
+        Slider antWarriorSpawnTimeSlider = new Slider(MIN_SPAWN_DELAY, MAX_SPAWN_DELAY, 1);
+        TextField antWarriorSpawnTimeTextF = new TextField("1");
+        Slider antWorkerSpawnTimeSlider = new Slider(MIN_SPAWN_DELAY, MAX_SPAWN_DELAY, 1);
+        TextField antWorkerSpawnTimeTextF = new TextField("1");
+
+        antWarriorSpawnTimeSlider.setLayoutX(10);
+        antWarriorSpawnTimeSlider.setLayoutY(310);
+        antWarriorSpawnTimeSlider.setShowTickMarks(true);
+        antWarriorSpawnTimeSlider.setMinorTickCount(0);
+        antWarriorSpawnTimeSlider.setMajorTickUnit(1);
+        antWarriorSpawnTimeSlider.setSnapToTicks(true);
+        antWarriorSpawnTimeSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number newValue) {
+                antWarriorSpawnDelay = newValue.intValue();
+                timeToAntWarriorSpawn = newValue.intValue();
+                antWarriorSpawnTimeTextF.setText(String.valueOf(newValue.intValue()));
+            }
+        });
+        root.getChildren().add(antWarriorSpawnTimeSlider);
+
+
+        antWorkerSpawnTimeSlider.setLayoutX(10);
+        antWorkerSpawnTimeSlider.setLayoutY(360);
+        antWorkerSpawnTimeSlider.setShowTickMarks(true);
+        antWorkerSpawnTimeSlider.setMajorTickUnit(1);
+        antWorkerSpawnTimeSlider.setMinorTickCount(0);
+        antWorkerSpawnTimeSlider.setSnapToTicks(true);
+        antWorkerSpawnTimeSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number newValue) {
+                antWorkerSpawnDelay = newValue.intValue();
+                timeToAntWorkerSpawn = newValue.intValue();
+                antWorkerSpawnTimeTextF.setText(String.valueOf(newValue.intValue()));
+            }
+        });
+        root.getChildren().add(antWorkerSpawnTimeSlider);
+
+        antWarriorSpawnTimeTextF.setMaxWidth(40);
+        antWarriorSpawnTimeTextF.setLayoutX(150);
+        antWarriorSpawnTimeTextF.setLayoutY(310);
+        antWarriorSpawnTimeTextF.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ENTER) {
+                int tmp = Integer.parseInt(antWarriorSpawnTimeTextF.getText());
+                if (tmp >= MIN_SPAWN_DELAY && tmp <= MAX_SPAWN_DELAY) {
+                    antWarriorSpawnDelay = tmp;
+                    antWarriorSpawnTimeSlider.setValue(tmp);
+                }
+                else
+                    showInvalidValueError();
+            }
+        });
+        root.getChildren().add(antWarriorSpawnTimeTextF);
+
+
+        antWorkerSpawnTimeTextF.setMaxWidth(40);
+        antWorkerSpawnTimeTextF.setLayoutX(150);
+        antWorkerSpawnTimeTextF.setLayoutY(360);
+        antWorkerSpawnTimeTextF.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ENTER) {
+                int tmp = Integer.parseInt(antWorkerSpawnTimeTextF.getText());
+                if (tmp >= MIN_SPAWN_DELAY && tmp <= MAX_SPAWN_DELAY) {
+                    antWorkerSpawnDelay = tmp;
+                    antWorkerSpawnTimeSlider.setValue(tmp);
+                }
+                else
+                    showInvalidValueError();
+            }
+        });
+        root.getChildren().add(antWorkerSpawnTimeTextF);
+
+        Label text3 = new Label("Ant Warrior spawn delay");
+        text3.setLayoutX(30);
+        text3.setLayoutY(290);
+        root.getChildren().add(text3);
+
+        Label text4 = new Label("Ant Worker spawn delay");
+        text4.setLayoutX(30);
+        text4.setLayoutY(340);
+        root.getChildren().add(text4);
 
         MenuBar menuBar = new MenuBar();
         menuBar.setMinWidth(740);
