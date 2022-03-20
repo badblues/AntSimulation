@@ -7,7 +7,7 @@ import javafx.scene.image.ImageView;
 
 public class AntWarrior extends Ant implements IBehavior {
 
-    static final ImageView antWarriorImageView = new ImageView(new Image("resources/ant_warrior.png"));
+    final ImageView antWarriorImageView = new ImageView(new Image("resources/ant_warrior.png"));
     Group root;
 
     AntWarrior() {

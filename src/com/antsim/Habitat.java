@@ -18,12 +18,12 @@ import javafx.stage.Stage;
 
 import java.util.*;
 
-//TODO menu bar
-//TODO singleton
 //TODO add control elements spawn delay and spawn chance
 //TODO MVC javafx
 
 public class Habitat extends Application {
+
+    private static Habitat instance;
 
     static int antWarriorSpawnChance = 50; // percents
     static int antWorkerSpawnChance = 50; // percents
@@ -41,6 +41,11 @@ public class Habitat extends Application {
     Button stopButton = new Button("Stop");
     Timer timer;
 
+    private static synchronized Habitat getInstance() {
+        if (instance == null)
+            instance = new Habitat();
+        return instance;
+    }
 
     public static void main(String[] args) {
         launch(args);
@@ -117,11 +122,14 @@ public class Habitat extends Application {
     private void endTimer() {
         stopButton.setDisable(true);
         startButton.setDisable(false);
+        //TODO updateStatisticsText();
+        //showStatistic();
         if (timer != null)
             timer.cancel();
     }
 
     private void endSimulation() {
+        endTimer();
         for (Ant ant : antsArray) {
             ant.destroyImage();
         }
@@ -168,7 +176,7 @@ public class Habitat extends Application {
         stage.getIcons().add(icon);
 
         timeText.setX(370);
-        timeText.setY(20);
+        timeText.setY(45);
         timeText.setFont(Font.font("Verdana"));
         timeText.setFill(Color.WHITE);
         timeText.setVisible(false);
@@ -260,5 +268,32 @@ public class Habitat extends Application {
         text2.setLayoutX(30);
         text2.setLayoutY(230);
         root.getChildren().add(text2);
+
+        MenuBar menuBar = new MenuBar();
+        menuBar.setMinWidth(740);
+        menuBar.setMaxHeight(40);
+        root.getChildren().add(menuBar);
+
+        Menu simulationMenu = new Menu("Simulation");
+        menuBar.getMenus().add(simulationMenu);
+
+        MenuItem startMenuItem = new MenuItem("Start");
+        startMenuItem.setOnAction(actionEvent -> {
+            continueTimer();
+        });
+        simulationMenu.getItems().add(startMenuItem);
+
+        MenuItem endMenuItem = new MenuItem("End");
+        endMenuItem.setOnAction(actionEvent -> {
+            endSimulation();
+        });
+        simulationMenu.getItems().add(endMenuItem);
+
+        MenuItem continueMenuItem = new MenuItem("Pause");
+        continueMenuItem.setOnAction(actionEvent -> {
+            endTimer();
+        });
+        simulationMenu.getItems().add(continueMenuItem);
+
     }
 }
