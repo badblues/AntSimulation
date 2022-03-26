@@ -8,18 +8,18 @@ public class Model {
 
     private static Model instance;
 
-    ArrayList<Ant> antsArray = new ArrayList<Ant>();
-    int antWarriorSpawnChance = 100; //percents
-    int antWorkerSpawnChance = 100; //percents
-    int antWarriorSpawnDelay = 1; // seconds
-    int antWorkerSpawnDelay = 1; // seconds
+    private ArrayList<Ant> antsArray = new ArrayList<Ant>();
+    private int antWarriorSpawnChance = 100; //percents
+    private int antWorkerSpawnChance = 100; //percents
+    private     int antWarriorSpawnDelay = 1; // seconds
+    private int antWorkerSpawnDelay = 1; // seconds
     static final int MAX_SPAWN_DELAY = 15;
     static final int MIN_SPAWN_DELAY = 1;
-    IntegerProperty antWarriorCount;
-    IntegerProperty antWorkerCount;
-    IntegerProperty time;
-    int timeToAntWarriorSpawn = antWarriorSpawnDelay;
-    int timeToAntWorkerSpawn = antWorkerSpawnDelay;
+    private int antWarriorCount;
+    private int antWorkerCount;
+    private int time;
+    private int timeToAntWarriorSpawn = antWarriorSpawnDelay;
+    private int timeToAntWorkerSpawn = antWorkerSpawnDelay;
 
     private static synchronized Model getInstance() {
         if (instance == null)

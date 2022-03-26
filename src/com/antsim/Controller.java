@@ -13,6 +13,7 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+
 public class Controller {
 
     private static Controller instance;
@@ -84,22 +85,23 @@ public class Controller {
         updateTimeText();
         updateStatisticText();
 
-        if (model.getTimeToAntWarriorSpawn() == 0 &&
+
+        if (model.getTimeToAntWarriorSpawn() <= 0 &&
                 rand.nextInt(100) <= model.getAntWarriorSpawnChance()) {
             AntWarrior a = new AntWarrior();
             a.spawn(view.getRoot());
             model.getAntsArray().add(a);
             model.setAntWarriorCount(model.getAntWarriorCount() + 1);
-            model.setTimeToAntWarriorSpawn(model.antWarriorSpawnDelay);
+            model.setTimeToAntWarriorSpawn(model.getAntWarriorSpawnDelay());
         }
 
-        if (model.getTimeToAntWorkerSpawn() == 0 &&
+        if (model.getTimeToAntWorkerSpawn() <= 0 &&
                 rand.nextInt(100) <= model.getAntWorkerSpawnChance()) {
             AntWorker a = new AntWorker();
             a.spawn(view.getRoot());
             model.getAntsArray().add(a);
             model.setAntWorkerCount(model.getAntWorkerCount() + 1);
-            model.setTimeToAntWorkerSpawn(model.antWorkerSpawnDelay);
+            model.setTimeToAntWorkerSpawn(model.getAntWorkerSpawnDelay());
         }
     }
 
@@ -178,6 +180,18 @@ public class Controller {
             }
         });
 
+        //Valid numbers check and input
+        view.getAntWarriorSpawnTimeTextF().textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String oldVal, String newVal) {
+                if (!newVal.matches("\\d*"))
+                    view.getAntWarriorSpawnTimeTextF().setText(newVal.replaceAll("\\D", ""));
+                String s = view.getAntWarriorSpawnTimeTextF().getText();
+                if (s.length() > 2) {
+                    view.getAntWarriorSpawnTimeTextF().setText(s.substring(0, 2));
+                }
+            }
+        });
         view.getAntWarriorSpawnTimeTextF().setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ENTER) {
                 int tmp = Integer.parseInt(view.getAntWarriorSpawnTimeTextF().getText());
@@ -190,6 +204,19 @@ public class Controller {
             }
         });
 
+        //Valid numbers check and input
+        view.getAntWorkerSpawnTimeTextF().textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String oldVal, String newVal) {
+                if (!newVal.matches("\\d")) {
+                    view.getAntWorkerSpawnTimeTextF().setText(newVal.replaceAll("\\D", ""));
+                }
+                String s = view.getAntWorkerSpawnTimeTextF().getText();
+                if (s.length() > 2) {
+                    view.getAntWorkerSpawnTimeTextF().setText(s.substring(0, 2));
+                }
+            }
+        });
         view.getAntWorkerSpawnTimeTextF().setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ENTER) {
                 int tmp = Integer.parseInt(view.getAntWorkerSpawnTimeTextF().getText());

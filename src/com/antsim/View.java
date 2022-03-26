@@ -1,7 +1,9 @@
 package com.antsim;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -11,6 +13,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class View {
 
@@ -151,7 +154,13 @@ public class View {
         stage.setTitle("AntSimulation");
         Image icon = new Image("resources/icon_ant.jpg");
         stage.getIcons().add(icon);
-        //TODO closing window
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent windowEvent) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });
     }
 
     private void timeTextSetUp() {
