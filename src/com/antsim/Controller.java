@@ -85,11 +85,10 @@ public class Controller {
         updateTimeText();
         updateStatisticText();
 
-
         if (model.getTimeToAntWarriorSpawn() <= 0 &&
                 rand.nextInt(100) <= model.getAntWarriorSpawnChance()) {
             AntWarrior a = new AntWarrior();
-            a.spawn(view.getRoot());
+            a.spawn(view.getRoot(), time);
             model.getAntsArray().add(a);
             model.setAntWarriorCount(model.getAntWarriorCount() + 1);
             model.setTimeToAntWarriorSpawn(model.getAntWarriorSpawnDelay());
@@ -98,7 +97,7 @@ public class Controller {
         if (model.getTimeToAntWorkerSpawn() <= 0 &&
                 rand.nextInt(100) <= model.getAntWorkerSpawnChance()) {
             AntWorker a = new AntWorker();
-            a.spawn(view.getRoot());
+            a.spawn(view.getRoot(), time);
             model.getAntsArray().add(a);
             model.setAntWorkerCount(model.getAntWorkerCount() + 1);
             model.setTimeToAntWorkerSpawn(model.getAntWorkerSpawnDelay());
@@ -106,42 +105,29 @@ public class Controller {
     }
 
     private void setKeys() {
-        view.getScene().setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent keyEvent) {
-                switch (keyEvent.getCode()) {
-                    case B -> {
-                        timer = startSimulation();
-                    }
-                    case E -> {
-                        pauseSimulation();
-                    }
-                    case T ->  {
-                        updateTimeText();
-                        view.getTimeText().setVisible(!view.getTimeText().isVisible());
-                    }
+        view.getScene().setOnKeyPressed(keyEvent -> {
+            switch (keyEvent.getCode()) {
+                case B -> timer = startSimulation();
+                case E -> pauseSimulation();
+                case T ->  {
+                    updateTimeText();
+                    view.getTimeText().setVisible(!view.getTimeText().isVisible());
                 }
             }
         });
     }
 
     private void setButtonActions() {
-        view.getStartButton().setOnAction(actionEvent -> {
-            timer = startSimulation();
-        });
+        view.getStartButton().setOnAction(actionEvent ->  timer = startSimulation());
 
-        view.getPauseButton().setOnAction(actionEvent -> {
-            pauseSimulation();
-        });
+        view.getPauseButton().setOnAction(actionEvent -> pauseSimulation());
 
         view.getShowTimeButton().setOnAction(actionEvent -> {
             updateTimeText();
             view.getTimeText().setVisible(true);
         });
 
-        view.getHideTimeButton().setOnAction(actionEvent -> {
-            view.getTimeText().setVisible(false);
-        });
+        view.getHideTimeButton().setOnAction(actionEvent -> view.getTimeText().setVisible(false));
 
         view.getShowInfoButton().setOnAction(actionEvent -> {
             pauseSimulation();
@@ -153,13 +139,9 @@ public class Controller {
             view.getShowInfoButton().setSelected(false);
         });
 
-        view.getAntWarriorSpawnChanceBox().setOnAction(event -> {
-            model.setAntWarriorSpawnChance((int)view.getAntWarriorSpawnChanceBox().getValue());
-        });
+        view.getAntWarriorSpawnChanceBox().setOnAction(event -> model.setAntWarriorSpawnChance(view.getAntWarriorSpawnChanceBox().getValue()));
 
-        view.getAntWorkerSpawnChanceBox().setOnAction(event -> {
-            model.setAntWorkerSpawnChance((int)view.getAntWorkerSpawnChanceBox().getValue());
-        });
+        view.getAntWorkerSpawnChanceBox().setOnAction(event -> model.setAntWorkerSpawnChance(view.getAntWorkerSpawnChanceBox().getValue()));
 
         view.getAntWarriorSpawnTimeSlider().valueProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -197,10 +179,13 @@ public class Controller {
                 int tmp = Integer.parseInt(view.getAntWarriorSpawnTimeTextF().getText());
                 if (tmp >= Model.MIN_SPAWN_DELAY && tmp <= Model.MAX_SPAWN_DELAY) {
                     model.setAntWarriorSpawnDelay(tmp);
-                    view.antWarriorSpawnTimeSlider.setValue(tmp);
+                    view.getAntWarriorSpawnTimeSlider().setValue(tmp);
                 }
-                else
+                else {
+                    view.getInvalidValueAlert().setContentText("Choose value between " + Model.MIN_SPAWN_DELAY +
+                            " and " + Model.MAX_SPAWN_DELAY);
                     view.getInvalidValueAlert().show();
+                }
             }
         });
 
@@ -222,17 +207,68 @@ public class Controller {
                 int tmp = Integer.parseInt(view.getAntWorkerSpawnTimeTextF().getText());
                 if (tmp >= Model.MIN_SPAWN_DELAY && tmp <= Model.MAX_SPAWN_DELAY) {
                     model.setAntWorkerSpawnDelay(tmp);
-                    view.antWorkerSpawnTimeSlider.setValue(tmp);
+                    view.getAntWorkerSpawnTimeSlider().setValue(tmp);
                 }
-                else
+                else {
+                    view.getInvalidValueAlert().setContentText("Choose value between " + Model.MIN_SPAWN_DELAY +
+                            " and " + Model.MAX_SPAWN_DELAY);
                     view.getInvalidValueAlert().show();
+                }
             }
         });
 
-        view.getStartMenuItem().setOnAction(actionEvent -> {
-            startSimulation();
+        view.getAntWarriorLifeTimeTextF().textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String oldVal, String newVal) {
+                if (!newVal.matches("\\d")) {
+                    view.getAntWarriorLifeTimeTextF().setText(newVal.replaceAll("\\D", ""));
+                }
+                String s = view.getAntWarriorLifeTimeTextF().getText();
+                if (s.length() > 2)
+                    view.getAntWarriorLifeTimeTextF().setText(s.substring(0, 2));
+            }
+        });
+        view.getAntWarriorLifeTimeTextF().setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ENTER) {
+                int tmp = Integer.parseInt(view.getAntWarriorLifeTimeTextF().getText());
+                if (tmp >= Model.MIN_LIFE_TIME && tmp <= Model.MAX_LIFE_TIME) {
+                    model.setAntWarriorLifeTime(tmp);
+                }
+                else {
+                    view.getInvalidValueAlert().setContentText("Choose value between " + Model.MIN_LIFE_TIME +
+                            " and " + Model.MAX_LIFE_TIME);
+                    view.getInvalidValueAlert().show();
+                }
+            }
         });
 
+        view.getAntWorkerLifeTimeTextF().textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String oldVal, String newVal) {
+                if (!newVal.matches("\\d")) {
+                    view.getAntWorkerLifeTimeTextF().setText(newVal.replaceAll("\\D", ""));
+                }
+                String s = view.getAntWorkerLifeTimeTextF().getText();
+                if (s.length() > 2)
+                    view.getAntWorkerLifeTimeTextF().setText(s.substring(0, 2));
+            }
+        });
+        view.getAntWorkerLifeTimeTextF().setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ENTER) {
+                int tmp = Integer.parseInt(view.getAntWorkerLifeTimeTextF().getText());
+                if (tmp >= Model.MIN_LIFE_TIME && tmp <= Model.MAX_LIFE_TIME) {
+                    model.setAntWorkerLifeTime(tmp);
+                }
+                else {
+                    view.getInvalidValueAlert().setContentText("Choose value between " + Model.MIN_LIFE_TIME +
+                            " and " + Model.MAX_LIFE_TIME);
+                    view.getInvalidValueAlert().show();
+                }
+            }
+        });
+
+
+        view.getStartMenuItem().setOnAction(actionEvent -> startSimulation());
 
 
         view.getEndMenuItem().setOnAction(actionEvent -> {
@@ -240,11 +276,7 @@ public class Controller {
             updateTimeText();
         });
 
-
-
-        view.getPauseMenuItem().setOnAction(actionEvent -> {
-            pauseSimulation();
-        });
+        view.getPauseMenuItem().setOnAction(actionEvent -> pauseSimulation());
 
     }
 

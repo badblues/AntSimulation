@@ -19,30 +19,32 @@ public class View {
 
     private static View instance;
 
-    Stage stage;
-    Group root = new Group();
-    Scene scene = new Scene(root, 740, 540);
-    Rectangle toolArea = new Rectangle(0, 0, 200, 540);
-    Text timeText = new Text("Simulation time:   ");
-    Button startButton = new Button("Start");
-    Button pauseButton = new Button("Pause");
-    Alert endSimulationAlert = new Alert(Alert.AlertType.CONFIRMATION);
-    Alert invalidValueAlert = new Alert(Alert.AlertType.ERROR);
-    ToggleGroup timeButtonsGroup = new ToggleGroup();
-    RadioButton showTimeButton = new RadioButton("Show time");
-    RadioButton hideTimeButton = new RadioButton("Hide time");
-    CheckBox showInfoButton = new CheckBox("Show info");
-    ComboBox<Integer> antWarriorSpawnChanceBox = new ComboBox<Integer>();
-    ComboBox<Integer> antWorkerSpawnChanceBox = new ComboBox<Integer>();
-    Slider antWarriorSpawnTimeSlider = new Slider();
-    Slider antWorkerSpawnTimeSlider = new Slider();
-    TextField antWarriorSpawnTimeTextF = new TextField();
-    TextField antWorkerSpawnTimeTextF = new TextField();
-    MenuBar menuBar = new MenuBar();
-    Menu simulationMenu = new Menu("Simulation");
-    MenuItem startMenuItem = new MenuItem("Start");
-    MenuItem endMenuItem = new MenuItem("End");
-    MenuItem pauseMenuItem = new MenuItem("Pause");
+    private Stage stage;
+    private Group root = new Group();
+    private Scene scene = new Scene(root, 740, 540);
+    private Rectangle toolArea = new Rectangle(0, 0, 200, 540);
+    private Text timeText = new Text("Simulation time:   ");
+    private Button startButton = new Button("Start");
+    private Button pauseButton = new Button("Pause");
+    private Alert endSimulationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+    private Alert invalidValueAlert = new Alert(Alert.AlertType.ERROR);
+    private ToggleGroup timeButtonsGroup = new ToggleGroup();
+    private RadioButton showTimeButton = new RadioButton("Show time");
+    private RadioButton hideTimeButton = new RadioButton("Hide time");
+    private CheckBox showInfoButton = new CheckBox("Show info");
+    private ComboBox<Integer> antWarriorSpawnChanceBox = new ComboBox<Integer>();
+    private ComboBox<Integer> antWorkerSpawnChanceBox = new ComboBox<Integer>();
+    private Slider antWarriorSpawnTimeSlider = new Slider();
+    private Slider antWorkerSpawnTimeSlider = new Slider();
+    private TextField antWarriorSpawnTimeTextF = new TextField();
+    private TextField antWorkerSpawnTimeTextF = new TextField();
+    private TextField antWarriorLifeTimeTextF = new TextField();
+    private TextField antWorkerLifeTimeTextF = new TextField();
+    private MenuBar menuBar = new MenuBar();
+    private Menu simulationMenu = new Menu("Simulation");
+    private MenuItem startMenuItem = new MenuItem("Start");
+    private MenuItem endMenuItem = new MenuItem("End");
+    private MenuItem pauseMenuItem = new MenuItem("Pause");
 
     private static synchronized View getInstance() {
         if (instance == null)
@@ -88,9 +90,7 @@ public class View {
         return endSimulationAlert;
     }
 
-    Alert getInvalidValueAlert() {
-        return invalidValueAlert;
-    }
+    Alert getInvalidValueAlert() { return invalidValueAlert; }
 
     RadioButton getShowTimeButton() {
         return showTimeButton;
@@ -104,9 +104,7 @@ public class View {
         return showInfoButton;
     }
 
-    ComboBox<Integer> getAntWarriorSpawnChanceBox() {
-        return antWarriorSpawnChanceBox;
-    }
+    ComboBox<Integer> getAntWarriorSpawnChanceBox() { return antWarriorSpawnChanceBox; }
 
     ComboBox<Integer> getAntWorkerSpawnChanceBox() {
         return antWorkerSpawnChanceBox;
@@ -127,6 +125,10 @@ public class View {
     TextField getAntWorkerSpawnTimeTextF() {
         return antWorkerSpawnTimeTextF;
     }
+
+    TextField getAntWarriorLifeTimeTextF() { return antWarriorLifeTimeTextF; }
+
+    TextField getAntWorkerLifeTimeTextF() { return antWorkerLifeTimeTextF; }
 
     MenuItem getStartMenuItem() {
         return startMenuItem;
@@ -245,6 +247,18 @@ public class View {
         antWorkerSpawnTimeTextF.setLayoutY(360);
         antWorkerSpawnTimeTextF.setText("1");
         root.getChildren().add(antWorkerSpawnTimeTextF);
+
+        antWarriorLifeTimeTextF.setMaxWidth(60);
+        antWarriorLifeTimeTextF.setLayoutX(40);
+        antWarriorLifeTimeTextF.setLayoutY(410);
+        antWarriorLifeTimeTextF.setText("10");
+        root.getChildren().add(antWarriorLifeTimeTextF);
+
+        antWorkerLifeTimeTextF.setMaxWidth(60);
+        antWorkerLifeTimeTextF.setLayoutX(40);
+        antWorkerLifeTimeTextF.setLayoutY(450);
+        antWorkerLifeTimeTextF.setText("10");
+        root.getChildren().add(antWorkerLifeTimeTextF);
     }
 
     private void menuSetUp() {
@@ -259,24 +273,34 @@ public class View {
 
     private void textSetUp() {
         Label text = new Label("Ant Warrior spawn chance");
-        text.setLayoutX(30);
+        text.setLayoutX(25);
         text.setLayoutY(180);
         root.getChildren().add(text);
 
         Label text2 = new Label("Ant Worker spawn chance");
-        text2.setLayoutX(30);
+        text2.setLayoutX(25);
         text2.setLayoutY(230);
         root.getChildren().add(text2);
 
         Label text3 = new Label("Ant Warrior spawn delay");
-        text3.setLayoutX(30);
+        text3.setLayoutX(25);
         text3.setLayoutY(290);
         root.getChildren().add(text3);
 
         Label text4 = new Label("Ant Worker spawn delay");
-        text4.setLayoutX(30);
+        text4.setLayoutX(25);
         text4.setLayoutY(340);
         root.getChildren().add(text4);
+
+        Label text5 = new Label("Ant Warrior life time");
+        text5.setLayoutX(25);
+        text5.setLayoutY(390);
+        root.getChildren().add(text5);
+
+        Label text6 = new Label("Ant Worker life time");
+        text6.setLayoutX(25);
+        text6.setLayoutY(435);
+        root.getChildren().add(text6);
     }
 
     private void alertsSetUp() {
@@ -285,8 +309,6 @@ public class View {
 
         invalidValueAlert.setTitle("Error");
         invalidValueAlert.setHeaderText("Invalid value");
-        invalidValueAlert.setContentText("Choose value between " + Model.MIN_SPAWN_DELAY +
-                " and " + Model.MAX_SPAWN_DELAY);
     }
 
 }

@@ -4,6 +4,8 @@ import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.util.Random;
+
 public class AntWorker extends Ant implements IBehavior{
     final ImageView antWorkerImageView = new ImageView(new Image("resources/ant_worker.png"));
     Group root;
@@ -12,11 +14,15 @@ public class AntWorker extends Ant implements IBehavior{
         super();
     }
     @Override
-    void spawn(Group root) {
+    void spawn(Group root, int time) {
         antWorkerImageView.setX(posX);
         antWorkerImageView.setY(posY);
         root.getChildren().add(antWorkerImageView);
         this.root = root;
+
+        spawnTime = time;
+        Random rand = new Random();
+        lifeTime = rand.nextInt(10);
     }
 
     protected void destroyImage() {

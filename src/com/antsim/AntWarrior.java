@@ -1,9 +1,11 @@
 package com.antsim;
 
 import javafx.scene.Group;
-import javafx.scene.Parent;
+
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+
+import java.util.Random;
 
 public class AntWarrior extends Ant implements IBehavior {
 
@@ -15,11 +17,15 @@ public class AntWarrior extends Ant implements IBehavior {
     }
 
     @Override
-    void spawn(Group root) {
+    void spawn(Group root, int time) {
         antWarriorImageView.setX(posX);
         antWarriorImageView.setY(posY);
         root.getChildren().add(antWarriorImageView);
         this.root = root;
+
+        spawnTime = time;
+        Random rand = new Random();
+        lifeTime = rand.nextInt(10);
     }
 
     protected void destroyImage() {

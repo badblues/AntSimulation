@@ -15,11 +15,15 @@ public class Model {
     private int antWorkerSpawnDelay = 1; // seconds
     static final int MAX_SPAWN_DELAY = 15;
     static final int MIN_SPAWN_DELAY = 1;
+    static final int MIN_LIFE_TIME = 1;
+    static final int MAX_LIFE_TIME = 30;
     private int antWarriorCount;
     private int antWorkerCount;
     private int time;
     private int timeToAntWarriorSpawn = antWarriorSpawnDelay;
     private int timeToAntWorkerSpawn = antWorkerSpawnDelay;
+    private int antWarriorLifeTime = 10;
+    private int antWorkerLifeTime = 10;
 
     private static synchronized Model getInstance() {
         if (instance == null)
@@ -67,6 +71,10 @@ public class Model {
         return timeToAntWorkerSpawn;
     }
 
+    int getAntWarriorLifeTime() { return antWarriorLifeTime; }
+
+    int getAntWorkerLifeTime() { return antWorkerLifeTime; }
+
     void setAntWarriorSpawnChance(int chance) {
         antWarriorSpawnChance = chance;
     }
@@ -95,12 +103,12 @@ public class Model {
         this.time = time;
     }
 
-    void setTimeToAntWarriorSpawn(int time) {
-        timeToAntWarriorSpawn = time;
-    }
+    void setTimeToAntWarriorSpawn(int time) { timeToAntWarriorSpawn = time; }
 
-    void setTimeToAntWorkerSpawn(int time) {
-        timeToAntWorkerSpawn = time;
-    }
+    void setTimeToAntWorkerSpawn(int time) { timeToAntWorkerSpawn = time; }
+
+    void setAntWarriorLifeTime(int time) { antWarriorLifeTime = time; }
+
+    void setAntWorkerLifeTime(int time) { antWorkerLifeTime = time; }
 
 }
