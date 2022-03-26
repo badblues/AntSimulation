@@ -17,7 +17,7 @@ public class AntWarrior extends Ant implements IBehavior {
     }
 
     @Override
-    void spawn(Group root, int time) {
+    void spawn(Group root, int time, int lifeT, int id) {
         antWarriorImageView.setX(posX);
         antWarriorImageView.setY(posY);
         root.getChildren().add(antWarriorImageView);
@@ -25,7 +25,7 @@ public class AntWarrior extends Ant implements IBehavior {
 
         spawnTime = time;
         Random rand = new Random();
-        lifeTime = rand.nextInt(10);
+        lifeTime = lifeT;
     }
 
     protected void destroyImage() {

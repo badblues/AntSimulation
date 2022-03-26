@@ -3,11 +3,10 @@ package com.antsim;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.scene.control.ButtonType;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 
+import javax.sound.midi.SysexMessage;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Timer;
@@ -68,13 +67,63 @@ public class Controller {
     private void endSimulation() {
         pauseSimulation();
         updateTimeText();
-        for (Ant ant : model.getAntsArray()) {
+        for (Ant ant : model.getAntsVector()) {
             ant.destroyImage();
         }
-        model.getAntsArray().clear();
+        model.getAntsVector().clear();
         model.setAntWarriorCount(0);
         model.setAntWorkerCount(0);
         model.setTime(0);
+    }
+
+    int getNewID() {
+        Random rand = new Random();
+        int id = rand.nextInt();
+        while (model.getAntsIds().contains(id))
+            id = rand.nextInt();
+        return id;
+    }
+
+    void spawnWarrior(int time) {
+        AntWarrior a = new AntWarrior();
+        int id = getNewID();
+        a.spawn(view.getRoot(), time, model.getAntWarriorLifeTime(), id);
+        model.getAntsVector().add(a);
+        model.getAntsIds().add(id);
+        model.getAntsSpawnTime().put(id, time);
+        model.setAntWarriorCount(model.getAntWarriorCount() + 1);
+        model.setTimeToAntWarriorSpawn(model.getAntWarriorSpawnDelay());
+    }
+
+    void spawnWorker(int time) {
+        AntWorker a = new AntWorker();
+        int id = getNewID();
+        a.spawn(view.getRoot(), time, model.getAntWorkerLifeTime(), id);
+        model.getAntsVector().add(a);
+        model.getAntsIds().add(id);
+        model.getAntsSpawnTime().put(id, time);
+        model.setAntWorkerCount(model.getAntWorkerCount() + 1);
+        model.setTimeToAntWorkerSpawn(model.getAntWorkerSpawnDelay());
+    }
+
+    void removeAnt(Ant ant) {
+        ant.destroyImage();
+        model.getAntsIds().remove(ant.getId());
+        model.getAntsSpawnTime().remove(ant.getId());
+        model.getAntsVector().remove(ant);
+        if (ant instanceof AntWarrior)
+            model.setAntWarriorCount(model.getAntWarriorCount() - 1);
+        else
+            model.setAntWorkerCount(model.getAntWorkerCount() - 1);
+    }
+
+    void checkLifeTime(int time) {
+        for (int i = 0; i < model.getAntsVector().size(); i++) {
+            Ant ant = model.getAntsVector().get(i);
+            if (ant.getSpawnTime() + ant.getLifeTime() == time) {
+                removeAnt(ant);
+            }
+        }
     }
 
     void update(int time) {
@@ -87,21 +136,14 @@ public class Controller {
 
         if (model.getTimeToAntWarriorSpawn() <= 0 &&
                 rand.nextInt(100) <= model.getAntWarriorSpawnChance()) {
-            AntWarrior a = new AntWarrior();
-            a.spawn(view.getRoot(), time);
-            model.getAntsArray().add(a);
-            model.setAntWarriorCount(model.getAntWarriorCount() + 1);
-            model.setTimeToAntWarriorSpawn(model.getAntWarriorSpawnDelay());
+            spawnWarrior(time);
         }
 
         if (model.getTimeToAntWorkerSpawn() <= 0 &&
                 rand.nextInt(100) <= model.getAntWorkerSpawnChance()) {
-            AntWorker a = new AntWorker();
-            a.spawn(view.getRoot(), time);
-            model.getAntsArray().add(a);
-            model.setAntWorkerCount(model.getAntWorkerCount() + 1);
-            model.setTimeToAntWorkerSpawn(model.getAntWorkerSpawnDelay());
+            spawnWorker(time);
         }
+        checkLifeTime(time);
     }
 
     private void setKeys() {

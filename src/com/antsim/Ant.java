@@ -9,13 +9,47 @@ public abstract class Ant implements IBehavior {
     int posY;
     int spawnTime;
     int lifeTime;
+    int id;
 
     Ant() {
         Random rand = new Random();
         posX = rand.nextInt(500) + 200;
         posY = rand.nextInt(460) + 40;
+        id = rand.nextInt(1000);
     }
 
-    abstract void spawn(Group root, int time);
+    abstract void spawn(Group root, int time, int  lifeT, int id);
     abstract void destroyImage();
+
+    int getId() {
+        return id;
+    }
+
+    int getPosX() {
+        return posX;
+    }
+
+    int getPosY() {
+        return posY;
+    }
+
+    int getSpawnTime() {
+        return spawnTime;
+    }
+
+    int getLifeTime() {
+        return lifeTime;
+    }
+
+    void setPosX(int x) {
+        posX = x;
+    }
+
+    void setPosY(int y) {
+        posY = y;
+    }
+
+    void setLifeTime(int time) {
+        spawnTime = time;
+    }
 }

@@ -1,17 +1,19 @@
 package com.antsim;
 
-import javafx.beans.property.IntegerProperty;
-
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.TreeMap;
+import java.util.Vector;
 
 public class Model {
 
     private static Model instance;
 
-    private ArrayList<Ant> antsArray = new ArrayList<Ant>();
+    private Vector<Ant> antsVector = new Vector<>();
+    private HashSet<Integer> antsIds = new HashSet<>();
+    private TreeMap<Integer, Integer> antsSpawnTime = new TreeMap<>();
     private int antWarriorSpawnChance = 100; //percents
     private int antWorkerSpawnChance = 100; //percents
-    private     int antWarriorSpawnDelay = 1; // seconds
+    private int antWarriorSpawnDelay = 1; // seconds
     private int antWorkerSpawnDelay = 1; // seconds
     static final int MAX_SPAWN_DELAY = 15;
     static final int MIN_SPAWN_DELAY = 1;
@@ -31,9 +33,13 @@ public class Model {
         return instance;
     }
 
-    ArrayList<Ant> getAntsArray() {
-        return antsArray;
+    Vector<Ant> getAntsVector() {
+        return antsVector;
     }
+
+    HashSet<Integer> getAntsIds() { return antsIds; }
+
+    TreeMap<Integer, Integer> getAntsSpawnTime() { return antsSpawnTime; }
 
     int getAntWarriorSpawnChance() {
         return antWarriorSpawnChance;
@@ -47,9 +53,7 @@ public class Model {
         return antWarriorSpawnDelay;
     }
 
-    int getAntWorkerSpawnDelay() {
-        return antWorkerSpawnDelay;
-    }
+    int getAntWorkerSpawnDelay() { return antWorkerSpawnDelay; }
 
     int getAntWarriorCount() {
         return antWarriorCount;
