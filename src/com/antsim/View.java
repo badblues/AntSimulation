@@ -197,6 +197,7 @@ public class View {
 
         showInfoButton.setLayoutX(30);
         showInfoButton.setLayoutY(140);
+        showInfoButton.setSelected(false);
         root.getChildren().add(showInfoButton);
 
         ObservableList<Integer> chances = FXCollections.observableArrayList(

@@ -6,7 +6,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.ButtonType;
 import javafx.scene.input.KeyCode;
 
-import javax.sound.midi.SysexMessage;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Timer;
@@ -20,6 +19,7 @@ public class Controller {
     Model model = new Model();
     View view;
     Timer timer;
+    boolean canShowStatistics = false;
 
     private static synchronized Controller getInstance() {
         if (instance == null)
@@ -122,6 +122,7 @@ public class Controller {
             Ant ant = model.getAntsVector().get(i);
             if (ant.getSpawnTime() + ant.getLifeTime() == time) {
                 removeAnt(ant);
+                i--;
             }
         }
     }
@@ -162,7 +163,15 @@ public class Controller {
     private void setButtonActions() {
         view.getStartButton().setOnAction(actionEvent ->  timer = startSimulation());
 
-        view.getPauseButton().setOnAction(actionEvent -> pauseSimulation());
+        view.getPauseButton().setOnAction(actionEvent -> {
+            pauseSimulation();
+            if (canShowStatistics) {
+                updateStatisticText();
+                Optional<ButtonType> option = view.getEndSimulationAlert().showAndWait();
+                if (option.get() == ButtonType.OK)
+                    endSimulation();
+            }
+        });
 
         view.getShowTimeButton().setOnAction(actionEvent -> {
             updateTimeText();
@@ -172,13 +181,8 @@ public class Controller {
         view.getHideTimeButton().setOnAction(actionEvent -> view.getTimeText().setVisible(false));
 
         view.getShowInfoButton().setOnAction(actionEvent -> {
-            pauseSimulation();
-            updateStatisticText();
-            view.getShowInfoButton().setSelected(true);
-            Optional<ButtonType> option = view.getEndSimulationAlert().showAndWait();
-            if (option.get() == ButtonType.OK)
-                endSimulation();
-            view.getShowInfoButton().setSelected(false);
+            canShowStatistics = !canShowStatistics;
+            view.getShowInfoButton().setSelected(canShowStatistics);
         });
 
         view.getAntWarriorSpawnChanceBox().setOnAction(event -> model.setAntWarriorSpawnChance(view.getAntWarriorSpawnChanceBox().getValue()));
@@ -318,7 +322,15 @@ public class Controller {
             updateTimeText();
         });
 
-        view.getPauseMenuItem().setOnAction(actionEvent -> pauseSimulation());
+        view.getPauseMenuItem().setOnAction(actionEvent -> {
+            pauseSimulation();
+            if (canShowStatistics) {
+                updateStatisticText();
+                Optional<ButtonType> option = view.getEndSimulationAlert().showAndWait();
+                if (option.get() == ButtonType.OK)
+                    endSimulation();
+            }
+        });
 
     }
 
