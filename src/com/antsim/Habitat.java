@@ -20,9 +20,9 @@ public class Habitat extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         try {
-            View view = new View();
+            View view = View.getInstance();
             view.init(stage);
-            Controller controller = new Controller();
+            Controller controller = Controller.getInstance();
             controller.init(view);
         } catch (Exception e) {
             e.printStackTrace();

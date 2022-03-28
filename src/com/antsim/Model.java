@@ -27,7 +27,7 @@ public class Model {
     private int antWarriorLifeTime = 10;
     private int antWorkerLifeTime = 10;
 
-    private static synchronized Model getInstance() {
+    static synchronized Model getInstance() {
         if (instance == null)
             instance = new Model();
         return instance;
@@ -37,9 +37,9 @@ public class Model {
         return antsVector;
     }
 
-    HashSet<Integer> getAntsIds() { return antsIds; }
+    HashSet<Integer> getAntsIdsHashSet() { return antsIds; }
 
-    TreeMap<Integer, Integer> getAntsSpawnTime() { return antsSpawnTime; }
+    TreeMap<Integer, Integer> getAntsSpawnTimeTree() { return antsSpawnTime; }
 
     int getAntWarriorSpawnChance() {
         return antWarriorSpawnChance;

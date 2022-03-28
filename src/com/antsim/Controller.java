@@ -16,12 +16,12 @@ public class Controller {
 
     private static Controller instance;
 
-    Model model = new Model();
+    Model model = Model.getInstance();
     View view;
     Timer timer;
     boolean canShowStatistics = false;
 
-    private static synchronized Controller getInstance() {
+    static synchronized Controller getInstance() {
         if (instance == null)
             instance = new Controller();
         return instance;
@@ -78,9 +78,9 @@ public class Controller {
 
     int getNewID() {
         Random rand = new Random();
-        int id = rand.nextInt();
-        while (model.getAntsIds().contains(id))
-            id = rand.nextInt();
+        int id = Math.abs(rand.nextInt(1000));
+        while (model.getAntsIdsHashSet().contains(id))
+            id = Math.abs(rand.nextInt(1000));
         return id;
     }
 
@@ -89,8 +89,8 @@ public class Controller {
         int id = getNewID();
         a.spawn(view.getRoot(), time, model.getAntWarriorLifeTime(), id);
         model.getAntsVector().add(a);
-        model.getAntsIds().add(id);
-        model.getAntsSpawnTime().put(id, time);
+        model.getAntsIdsHashSet().add(id);
+        model.getAntsSpawnTimeTree().put(id, time);
         model.setAntWarriorCount(model.getAntWarriorCount() + 1);
         model.setTimeToAntWarriorSpawn(model.getAntWarriorSpawnDelay());
     }
@@ -100,16 +100,16 @@ public class Controller {
         int id = getNewID();
         a.spawn(view.getRoot(), time, model.getAntWorkerLifeTime(), id);
         model.getAntsVector().add(a);
-        model.getAntsIds().add(id);
-        model.getAntsSpawnTime().put(id, time);
+        model.getAntsIdsHashSet().add(id);
+        model.getAntsSpawnTimeTree().put(id, time);
         model.setAntWorkerCount(model.getAntWorkerCount() + 1);
         model.setTimeToAntWorkerSpawn(model.getAntWorkerSpawnDelay());
     }
 
     void removeAnt(Ant ant) {
         ant.destroyImage();
-        model.getAntsIds().remove(ant.getId());
-        model.getAntsSpawnTime().remove(ant.getId());
+        model.getAntsIdsHashSet().remove(ant.getId());
+        model.getAntsSpawnTimeTree().remove(ant.getId());
         model.getAntsVector().remove(ant);
         if (ant instanceof AntWarrior)
             model.setAntWarriorCount(model.getAntWarriorCount() - 1);
@@ -183,6 +183,18 @@ public class Controller {
         view.getShowInfoButton().setOnAction(actionEvent -> {
             canShowStatistics = !canShowStatistics;
             view.getShowInfoButton().setSelected(canShowStatistics);
+        });
+
+        view.getShowAliveAntsButton().setOnAction(actionEvent -> {
+            pauseSimulation();
+            String s = "Ants:\n";
+            for (Ant ant : model.getAntsVector()) {
+                int id = ant.getId();
+                s = s.concat(ant.getClass().getSimpleName() + " ID:" + id + " - Spawn time: " +
+                        model.getAntsSpawnTimeTree().get(id) + "s\n");
+            }
+            view.getAliveAntsAlert().setContentText(s);
+            view.getAliveAntsAlert().show();
         });
 
         view.getAntWarriorSpawnChanceBox().setOnAction(event -> model.setAntWarriorSpawnChance(view.getAntWarriorSpawnChanceBox().getValue()));

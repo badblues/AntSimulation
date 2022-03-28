@@ -3,7 +3,6 @@ package com.antsim;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -13,7 +12,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
+
+//TODO change gr
 
 public class View {
 
@@ -21,11 +21,13 @@ public class View {
 
     private Stage stage;
     private Group root = new Group();
-    private Scene scene = new Scene(root, 740, 540);
+    private Scene scene = new Scene(root, 940, 540);
     private Rectangle toolArea = new Rectangle(0, 0, 200, 540);
     private Text timeText = new Text("Simulation time:   ");
     private Button startButton = new Button("Start");
     private Button pauseButton = new Button("Pause");
+    private Button showAliveAntsButton = new Button("Show alive ants");
+    private Alert aliveAntsAlert = new Alert(Alert.AlertType.INFORMATION);
     private Alert endSimulationAlert = new Alert(Alert.AlertType.CONFIRMATION);
     private Alert invalidValueAlert = new Alert(Alert.AlertType.ERROR);
     private ToggleGroup timeButtonsGroup = new ToggleGroup();
@@ -46,7 +48,7 @@ public class View {
     private MenuItem endMenuItem = new MenuItem("End");
     private MenuItem pauseMenuItem = new MenuItem("Pause");
 
-    private static synchronized View getInstance() {
+    static synchronized View getInstance() {
         if (instance == null)
             instance = new View();
         return instance;
@@ -56,9 +58,9 @@ public class View {
 
     void init(Stage stage) {
         this.stage = stage;
-        timeTextSetUp();
         backgroundSetUp();
         stageSetUp();
+        timeTextSetUp();
         buttonsSetUp();
         menuSetUp();
         textSetUp();
@@ -84,6 +86,14 @@ public class View {
 
     Button getPauseButton() {
         return pauseButton;
+    }
+
+    Button getShowAliveAntsButton() {
+        return showAliveAntsButton;
+    }
+
+    Alert getAliveAntsAlert() {
+        return aliveAntsAlert;
     }
 
     Alert getEndSimulationAlert() {
@@ -143,9 +153,9 @@ public class View {
     }
 
     private void backgroundSetUp() {
-        scene.setFill(new Color(0.63, 0.39, 0.24, 1));
-        Rectangle area = new Rectangle(0, 0, 200, 540);
-        area.setFill(Color.GREY);
+        scene.setFill(Color.GREY);
+        Rectangle area = new Rectangle(200, 0, 540, 540);
+        area.setFill(new Color(0.63, 0.39, 0.24, 1));
         root.getChildren().add(area);
     }
 
@@ -156,12 +166,9 @@ public class View {
         stage.setTitle("AntSimulation");
         Image icon = new Image("resources/icon_ant.jpg");
         stage.getIcons().add(icon);
-        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent windowEvent) {
-                Platform.exit();
-                System.exit(0);
-            }
+        stage.setOnCloseRequest(windowEvent -> {
+            Platform.exit();
+            System.exit(0);
         });
     }
 
@@ -184,6 +191,10 @@ public class View {
         pauseButton.setDisable(true);
         root.getChildren().add(pauseButton);
 
+        showAliveAntsButton.setLayoutX(40);
+        showAliveAntsButton.setLayoutY(180);
+        root.getChildren().add(showAliveAntsButton);
+
         showTimeButton.setLayoutX(30);
         showTimeButton.setLayoutY(100);
         showTimeButton.setToggleGroup(timeButtonsGroup);
@@ -204,19 +215,19 @@ public class View {
                 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100);
 
         antWarriorSpawnChanceBox.setItems(chances);
-        antWarriorSpawnChanceBox.setLayoutX(30);
-        antWarriorSpawnChanceBox.setLayoutY(200);
+        antWarriorSpawnChanceBox.setLayoutX(800);
+        antWarriorSpawnChanceBox.setLayoutY(60);
         antWarriorSpawnChanceBox.setValue(100);
         root.getChildren().add(antWarriorSpawnChanceBox);
 
         antWorkerSpawnChanceBox.setItems(chances);
-        antWorkerSpawnChanceBox.setLayoutX(30);
-        antWorkerSpawnChanceBox.setLayoutY(250);
+        antWorkerSpawnChanceBox.setLayoutX(800);
+        antWorkerSpawnChanceBox.setLayoutY(110);
         antWorkerSpawnChanceBox.setValue(100);
         root.getChildren().add(antWorkerSpawnChanceBox);
 
-        antWarriorSpawnTimeSlider.setLayoutX(10);
-        antWarriorSpawnTimeSlider.setLayoutY(310);
+        antWarriorSpawnTimeSlider.setLayoutX(750);
+        antWarriorSpawnTimeSlider.setLayoutY(170);
         antWarriorSpawnTimeSlider.setShowTickMarks(true);
         antWarriorSpawnTimeSlider.setMinorTickCount(0);
         antWarriorSpawnTimeSlider.setMajorTickUnit(1);
@@ -226,8 +237,8 @@ public class View {
         antWarriorSpawnTimeSlider.setValue(1);
         root.getChildren().add(antWarriorSpawnTimeSlider);
 
-        antWorkerSpawnTimeSlider.setLayoutX(10);
-        antWorkerSpawnTimeSlider.setLayoutY(360);
+        antWorkerSpawnTimeSlider.setLayoutX(750);
+        antWorkerSpawnTimeSlider.setLayoutY(220);
         antWorkerSpawnTimeSlider.setShowTickMarks(true);
         antWorkerSpawnTimeSlider.setMajorTickUnit(1);
         antWorkerSpawnTimeSlider.setMinorTickCount(0);
@@ -238,32 +249,32 @@ public class View {
         root.getChildren().add(antWorkerSpawnTimeSlider);
 
         antWarriorSpawnTimeTextF.setMaxWidth(40);
-        antWarriorSpawnTimeTextF.setLayoutX(150);
-        antWarriorSpawnTimeTextF.setLayoutY(310);
+        antWarriorSpawnTimeTextF.setLayoutX(890);
+        antWarriorSpawnTimeTextF.setLayoutY(170);
         antWarriorSpawnTimeTextF.setText("1");
         root.getChildren().add(antWarriorSpawnTimeTextF);
 
         antWorkerSpawnTimeTextF.setMaxWidth(40);
-        antWorkerSpawnTimeTextF.setLayoutX(150);
-        antWorkerSpawnTimeTextF.setLayoutY(360);
+        antWorkerSpawnTimeTextF.setLayoutX(890);
+        antWorkerSpawnTimeTextF.setLayoutY(220);
         antWorkerSpawnTimeTextF.setText("1");
         root.getChildren().add(antWorkerSpawnTimeTextF);
 
         antWarriorLifeTimeTextF.setMaxWidth(60);
-        antWarriorLifeTimeTextF.setLayoutX(40);
-        antWarriorLifeTimeTextF.setLayoutY(410);
+        antWarriorLifeTimeTextF.setLayoutX(810);
+        antWarriorLifeTimeTextF.setLayoutY(270);
         antWarriorLifeTimeTextF.setText("10");
         root.getChildren().add(antWarriorLifeTimeTextF);
 
         antWorkerLifeTimeTextF.setMaxWidth(60);
-        antWorkerLifeTimeTextF.setLayoutX(40);
-        antWorkerLifeTimeTextF.setLayoutY(450);
+        antWorkerLifeTimeTextF.setLayoutX(810);
+        antWorkerLifeTimeTextF.setLayoutY(320);
         antWorkerLifeTimeTextF.setText("10");
         root.getChildren().add(antWorkerLifeTimeTextF);
     }
 
     private void menuSetUp() {
-        menuBar.setMinWidth(740);
+        menuBar.setMinWidth(940);
         menuBar.setMaxHeight(40);
         root.getChildren().add(menuBar);
         menuBar.getMenus().add(simulationMenu);
@@ -273,34 +284,34 @@ public class View {
     }
 
     private void textSetUp() {
-        Label text = new Label("Ant Warrior spawn chance");
-        text.setLayoutX(25);
-        text.setLayoutY(180);
-        root.getChildren().add(text);
+        Label text1 = new Label("Ant Warrior spawn chance");
+        text1.setLayoutX(750);
+        text1.setLayoutY(40);
+        root.getChildren().add(text1);
 
         Label text2 = new Label("Ant Worker spawn chance");
-        text2.setLayoutX(25);
-        text2.setLayoutY(230);
+        text2.setLayoutX(750);
+        text2.setLayoutY(90);
         root.getChildren().add(text2);
 
         Label text3 = new Label("Ant Warrior spawn delay");
-        text3.setLayoutX(25);
-        text3.setLayoutY(290);
+        text3.setLayoutX(758);
+        text3.setLayoutY(150);
         root.getChildren().add(text3);
 
         Label text4 = new Label("Ant Worker spawn delay");
-        text4.setLayoutX(25);
-        text4.setLayoutY(340);
+        text4.setLayoutX(758);
+        text4.setLayoutY(200);
         root.getChildren().add(text4);
 
         Label text5 = new Label("Ant Warrior life time");
-        text5.setLayoutX(25);
-        text5.setLayoutY(390);
+        text5.setLayoutX(782);
+        text5.setLayoutY(250);
         root.getChildren().add(text5);
 
         Label text6 = new Label("Ant Worker life time");
-        text6.setLayoutX(25);
-        text6.setLayoutY(435);
+        text6.setLayoutX(782);
+        text6.setLayoutY(300);
         root.getChildren().add(text6);
     }
 
@@ -310,6 +321,9 @@ public class View {
 
         invalidValueAlert.setTitle("Error");
         invalidValueAlert.setHeaderText("Invalid value");
+
+        aliveAntsAlert.setTitle("Alive ants");
+        aliveAntsAlert.setHeaderText(null);
     }
 
 }

@@ -26,6 +26,7 @@ public class AntWarrior extends Ant implements IBehavior {
         spawnTime = time;
         Random rand = new Random();
         lifeTime = lifeT;
+        this.id = id;
     }
 
     protected void destroyImage() {
