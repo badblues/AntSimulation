@@ -1,6 +1,8 @@
 package com.antsim;
 
 import javafx.application.*;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.stage.*;
 
 import java.util.*;
@@ -11,7 +13,7 @@ import java.util.*;
 
 public class Habitat extends Application {
 
-	static final int MAX_SPAWN_DELAY = 15;
+	static final int MAX_SPAWN_DELAY = 30;
 	static final int MIN_SPAWN_DELAY = 1;
 	static final int MIN_LIFE_TIME = 1;
 	static final int MAX_LIFE_TIME = 30;
@@ -44,10 +46,11 @@ public class Habitat extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
 		try {
-			View view = View.getInstance();
-			view.init(stage);
-			Controller controller = Controller.getInstance();
-			controller.init(view);
+			Parent root = javafx.fxml.FXMLLoader.load(getClass().getResource("AntSim.fxml"));
+			Scene scene = new Scene(root);
+			stage.setScene(scene);
+			stage.setResizable(false);
+			stage.show();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

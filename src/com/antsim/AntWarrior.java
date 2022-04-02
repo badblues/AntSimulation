@@ -14,6 +14,7 @@ public class AntWarrior extends Ant implements IBehavior {
 
 	@Override
 	void spawn(Group root, int time, int lifeT, int id) {
+		System.out.println("Warrior spawned");
 		antWarriorImageView.setX(posX);
 		antWarriorImageView.setY(posY);
 		root.getChildren().add(antWarriorImageView);

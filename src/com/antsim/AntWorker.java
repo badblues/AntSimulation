@@ -15,6 +15,7 @@ public class AntWorker extends Ant implements IBehavior{
     }
     @Override
     void spawn(Group root, int time, int lifeT ,int id) {
+        System.out.println("Worker spawned");
         antWorkerImageView.setX(posX);
         antWorkerImageView.setY(posY);
         root.getChildren().add(antWorkerImageView);
