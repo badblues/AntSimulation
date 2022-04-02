@@ -1,55 +1,56 @@
 package com.antsim;
 
-import javafx.scene.Group;
+import javafx.scene.*;
 
-import java.util.Random;
+import java.util.*;
 
 public abstract class Ant implements IBehavior {
-    int posX;
-    int posY;
-    int spawnTime;
-    int lifeTime;
-    int id;
+	int posX;
+	int posY;
+	int spawnTime;
+	int lifeTime;
+	int id;
 
-    Ant() {
-        Random rand = new Random();
-        posX = rand.nextInt(500) + 200;
-        posY = rand.nextInt(460) + 40;
-        id = rand.nextInt(1000);
-    }
+	Ant() {
+		Random rand = new Random();
+		posX = rand.nextInt(500) + 200;
+		posY = rand.nextInt(460) + 40;
+		id = rand.nextInt(1000);
+	}
 
-    abstract void spawn(Group root, int time, int  lifeT, int id);
-    abstract void destroyImage();
+	abstract void spawn(Group root, int time, int lifeT, int id);
 
-    int getId() {
-        return id;
-    }
+	abstract void destroyImage();
 
-    int getPosX() {
-        return posX;
-    }
+	int getId() {
+		return id;
+	}
 
-    int getPosY() {
-        return posY;
-    }
+	int getPosX() {
+		return posX;
+	}
 
-    int getSpawnTime() {
-        return spawnTime;
-    }
+	void setPosX(int x) {
+		posX = x;
+	}
 
-    int getLifeTime() {
-        return lifeTime;
-    }
+	int getPosY() {
+		return posY;
+	}
 
-    void setPosX(int x) {
-        posX = x;
-    }
+	void setPosY(int y) {
+		posY = y;
+	}
 
-    void setPosY(int y) {
-        posY = y;
-    }
+	int getSpawnTime() {
+		return spawnTime;
+	}
 
-    void setLifeTime(int time) {
-        spawnTime = time;
-    }
+	int getLifeTime() {
+		return lifeTime;
+	}
+
+	void setLifeTime(int time) {
+		spawnTime = time;
+	}
 }

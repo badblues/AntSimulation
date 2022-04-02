@@ -21,7 +21,6 @@ public class AntWorker extends Ant implements IBehavior{
         this.root = root;
 
         spawnTime = time;
-        Random rand = new Random();
         lifeTime = lifeT;
         this.id = id;
     }
