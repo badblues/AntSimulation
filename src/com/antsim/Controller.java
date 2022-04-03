@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
 
 import java.net.URL;
@@ -99,13 +100,13 @@ public class Controller implements Initializable {
 				antWarriorLifeTimeTextF.setText(s.substring(0, 2));
 		});
 
-		antWarriorLifeTimeTextF.textProperty().addListener((observableValue, oldVal, newVal) -> {
+		antWorkerLifeTimeTextF.textProperty().addListener((observableValue, oldVal, newVal) -> {
 			if(!newVal.matches("\\d")) {
-				antWarriorLifeTimeTextF.setText(newVal.replaceAll("\\D", ""));
+				antWorkerLifeTimeTextF.setText(newVal.replaceAll("\\D", ""));
 			}
-			String s = antWarriorLifeTimeTextF.getText();
+			String s = antWorkerLifeTimeTextF.getText();
 			if(s.length() > 2)
-				antWarriorLifeTimeTextF.setText(s.substring(0, 2));
+				antWorkerLifeTimeTextF.setText(s.substring(0, 2));
 		});
 	}
 
@@ -150,19 +151,22 @@ public class Controller implements Initializable {
 		updateTimerText();
 	}
 
-	//TODO keys
-	//	private void setKeys() {
-	//		view.getScene().setOnKeyPressed(keyEvent -> {
-	//			switch(keyEvent.getCode()) {
-	//				case B -> timer = startSimulation();
-	//				case E -> pauseSimulation();
-	//				case T -> {
-	//					updateTimeText();
-	//					view.getTimeText().setVisible(!view.getTimeText().isVisible());
-	//				}
-	//			}
-	//		});
-	//	}
+
+	public void keyEvent(KeyEvent keyEvent) {
+		switch(keyEvent.getCode()) {
+				case B -> startSimulation();
+				case E -> pauseSimulation();
+				case T -> {
+					updateTimerText();
+					timerText.setVisible(!timerText.isVisible());
+					if (timerText.isVisible()) {
+						showTimeButton.setSelected(true);
+					} else {
+						hideTimeButton.setSelected(true);
+					}
+				}
+			}
+		}
 
 	public void showTimeText() {
 		timerText.setVisible(true);
@@ -294,11 +298,11 @@ public class Controller implements Initializable {
 		model.setTime(time);
 		updateTimerText();
 
-		if(model.getTimeToAntWarriorSpawn() <= 0 && rand.nextInt(100) <= model.getAntWarriorSpawnChance()) {
+		if(model.getTimeToAntWarriorSpawn() <= 0 && rand.nextInt(100) < model.getAntWarriorSpawnChance()) {
 			spawnWarrior(time);
 		}
 
-		if(model.getTimeToAntWorkerSpawn() <= 0 && rand.nextInt(100) <= model.getAntWorkerSpawnChance()) {
+		if(model.getTimeToAntWorkerSpawn() <= 0 && rand.nextInt(100) < model.getAntWorkerSpawnChance()) {
 			spawnWorker(time);
 		}
 		checkLifeTime(time);
