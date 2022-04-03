@@ -1,5 +1,7 @@
 package com.antsim;
 
+import com.antsim.ant.*;
+
 import javafx.application.*;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

@@ -1,21 +1,21 @@
-package com.antsim;
+package com.antsim.ant;
+
+import com.antsim.IBehavior;
 
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-import java.util.Random;
-
-public class AntWorker extends Ant implements IBehavior{
+public class AntWorker extends Ant implements IBehavior {
     final ImageView antWorkerImageView = new ImageView(new Image("resources/ant_worker.png"));
     Group root;
 
-    AntWorker() {
+    public AntWorker() {
         super();
     }
+
     @Override
-    void spawn(Group root, int time, int lifeT ,int id) {
-        System.out.println("Worker spawned");
+    public void spawn(Group root, int time, int lifeT ,int id) {
         antWorkerImageView.setX(posX);
         antWorkerImageView.setY(posY);
         root.getChildren().add(antWorkerImageView);
@@ -26,7 +26,7 @@ public class AntWorker extends Ant implements IBehavior{
         this.id = id;
     }
 
-    protected void destroyImage() {
+    public void destroyImage() {
         root.getChildren().remove(antWorkerImageView);
     }
 

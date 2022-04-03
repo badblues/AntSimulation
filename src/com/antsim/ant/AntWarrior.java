@@ -1,5 +1,6 @@
-package com.antsim;
+package com.antsim.ant;
 
+import com.antsim.IBehavior;
 import javafx.scene.*;
 import javafx.scene.image.*;
 
@@ -8,13 +9,12 @@ public class AntWarrior extends Ant implements IBehavior {
 	final ImageView antWarriorImageView = new ImageView(new Image("resources/ant_warrior.png"));
 	Group root;
 
-	AntWarrior() {
+	public AntWarrior() {
 		super();
 	}
 
 	@Override
-	void spawn(Group root, int time, int lifeT, int id) {
-		System.out.println("Warrior spawned");
+	public void spawn(Group root, int time, int lifeT, int id) {
 		antWarriorImageView.setX(posX);
 		antWarriorImageView.setY(posY);
 		root.getChildren().add(antWarriorImageView);
@@ -25,7 +25,7 @@ public class AntWarrior extends Ant implements IBehavior {
 		this.id = id;
 	}
 
-	protected void destroyImage() {
+	public void destroyImage() {
 		root.getChildren().remove(antWarriorImageView);
 	}
 }

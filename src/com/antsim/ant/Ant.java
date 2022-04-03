@@ -1,5 +1,6 @@
-package com.antsim;
+package com.antsim.ant;
 
+import com.antsim.IBehavior;
 import javafx.scene.*;
 
 import java.util.*;
@@ -14,43 +15,43 @@ public abstract class Ant implements IBehavior {
 	Ant() {
 		Random rand = new Random();
 		posX = rand.nextInt(760);
-		posY = rand.nextInt(680);
+		posY = rand.nextInt(660) + 20;
 		id = rand.nextInt(1000);
 	}
 
-	abstract void spawn(Group root, int time, int lifeT, int id);
+	public abstract void spawn(Group root, int time, int lifeT, int id);
 
-	abstract void destroyImage();
+	public abstract void destroyImage();
 
-	int getId() {
+	public int getId() {
 		return id;
 	}
 
-	int getPosX() {
+	public int getPosX() {
 		return posX;
 	}
 
-	void setPosX(int x) {
+	public void setPosX(int x) {
 		posX = x;
 	}
 
-	int getPosY() {
+	public int getPosY() {
 		return posY;
 	}
 
-	void setPosY(int y) {
+	public void setPosY(int y) {
 		posY = y;
 	}
 
-	int getSpawnTime() {
+	public int getSpawnTime() {
 		return spawnTime;
 	}
 
-	int getLifeTime() {
+	public int getLifeTime() {
 		return lifeTime;
 	}
 
-	void setLifeTime(int time) {
+	public void setLifeTime(int time) {
 		spawnTime = time;
 	}
 }
