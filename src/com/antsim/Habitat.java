@@ -11,7 +11,12 @@ import java.util.*;
 
 //TODO ключ тримапы - класс АНТ
 //TODO поиск в дереве по value и удаление по Id
-//TODO configure different packages
+//TODO стоп тредов по паузе
+//TODO отключение ии по кнопкам
+//TODO переделать движение муравьям
+//TODO разобраться с синхронизацией потоков
+//TODO выпадающие списки в панели управления для выставления приоритетов потоков
+
 
 public class Habitat extends Application {
 
@@ -52,6 +57,10 @@ public class Habitat extends Application {
 			Scene scene = new Scene(root);
 			stage.setScene(scene);
 			stage.setResizable(false);
+			stage.setOnCloseRequest(windowEvent ->  {
+				Platform.exit();
+				System.exit(0);
+			});
 			stage.show();
 		} catch(Exception e) {
 			e.printStackTrace();

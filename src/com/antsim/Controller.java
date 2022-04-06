@@ -140,7 +140,7 @@ public class Controller implements Initializable {
 		startMenuItem.setDisable(false);
 		if(timer != null) timer.cancel();
 		for(Ant ant : model.getAntsVector()) {
-			ant.destroyImage();
+			ant.destroyAnt();
 		}
 		model.getAntsVector().clear();
 		model.getAntsIdsHashSet().clear();
@@ -273,7 +273,7 @@ public class Controller implements Initializable {
 	}
 
 	private void removeAnt(Ant ant) {
-		ant.destroyImage();
+		ant.destroyAnt();
 		model.getAntsIdsHashSet().remove(ant.getId());
 		model.getAntsSpawnTimeTree().remove(ant.getId());
 		model.getAntsVector().remove(ant);
