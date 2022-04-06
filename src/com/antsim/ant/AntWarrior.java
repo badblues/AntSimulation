@@ -11,6 +11,7 @@ public class AntWarrior extends Ant implements IBehavior {
 	Group root;
 	AntWarriorAI antWarriorAI;
 
+
 	public AntWarrior() {
 		super();
 	}
@@ -38,4 +39,7 @@ public class AntWarrior extends Ant implements IBehavior {
 		antWarriorAI.kill();
 		root.getChildren().remove(antWarriorImageView);
 	}
+
+
+
 }

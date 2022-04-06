@@ -5,6 +5,9 @@ import com.antsim.ant.AntWorker;
 public class AntWorkerAI extends BaseAI{
 
 	private AntWorker antWorker;
+	int homeX = 400;
+	int homeY = 360;
+
 
 	public AntWorkerAI(AntWorker antWorker) {
 		this.antWorker = antWorker;
@@ -14,8 +17,7 @@ public class AntWorkerAI extends BaseAI{
 	public void run() {
 		//super.run();
 		while(!exit) {
-			antWorker.setPosX(antWorker.getPosX() + 0);
-			antWorker.setPosY(antWorker.getPosY() + 10);
+			//TODO change position
 			antWorker.moveImage(antWorker.getPosX(), antWorker.getPosY());
 			System.out.println(antWorker.getPosX() + " " + antWorker.getPosY());
 			try {
@@ -25,4 +27,6 @@ public class AntWorkerAI extends BaseAI{
 			}
 		}
 	}
+
+
 }

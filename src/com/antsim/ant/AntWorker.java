@@ -11,6 +11,7 @@ public class AntWorker extends Ant implements IBehavior {
     final ImageView antWorkerImageView = new ImageView(new Image("resources/ant_worker.png"));
     Group root;
     AntWorkerAI antWorkerAI;
+    destinations destination = destinations.HOME;
 
     public AntWorker() {
         super();
@@ -38,6 +39,18 @@ public class AntWorker extends Ant implements IBehavior {
     public void destroyAnt() {
         root.getChildren().remove(antWorkerImageView);
         antWorkerAI.kill();
+    }
+
+
+    public void changeDestination() {
+        if (destination == destinations.HOME)
+            destination = destinations.SPAWN;
+        else
+            destination = destinations.HOME;
+    }
+
+    enum destinations {
+        HOME, SPAWN;
     }
 
 }
