@@ -17,8 +17,8 @@ import java.util.*;
 public class Controller implements Initializable {
 
 	Habitat model = Habitat.getInstance();
-	AntWarriorAI antWarriorAI = new AntWarriorAI(model.getAntsVector());
-	AntWorkerAI antWorkerAI = new AntWorkerAI(model.getAntsVector());
+	final AntWarriorAI antWarriorAI = new AntWarriorAI(model.getAntsVector());
+	final AntWorkerAI antWorkerAI = new AntWorkerAI(model.getAntsVector());
 	AlertsView alertsView = AlertsView.getInstance();
 	Timer timer;
 
@@ -134,13 +134,13 @@ public class Controller implements Initializable {
 		startButton.setDisable(false);
 		startMenuItem.setDisable(false);
 		if(timer != null) timer.cancel();
+		stopAllMovement();
 		if(canShowStatistics) {
 			updateStatisticText();
 			Optional<ButtonType> option = alertsView.getEndSimulationAlert().showAndWait();
 				if(option.get() == ButtonType.OK)
 					endSimulation();
 		}
-		stopAllMovement();
 	}
 
 	public void endSimulation() {
@@ -350,17 +350,27 @@ public class Controller implements Initializable {
 	}
 
 	private void stopAllMovement() {
+		System.out.println("hyu govno1");
 		try {
-			antWarriorAI.wait();
-			antWorkerAI.wait();
+			synchronized(antWarriorAI) {
+				antWarriorAI.wait();
+			}
+			synchronized(antWorkerAI) {
+				antWorkerAI.wait();
+			}
 		} catch(InterruptedException e) {
 			e.printStackTrace();
 		}
+		System.out.println("hyu govno2");
 	}
 
 	private void startAllMovement() {
-		antWarriorAI.notify();
-		antWorkerAI.notify();
+		synchronized(antWarriorAI) {
+			antWarriorAI.notify();
+		}
+		synchronized(antWorkerAI) {
+			antWorkerAI.notify();
+		}
 	}
 
 }
