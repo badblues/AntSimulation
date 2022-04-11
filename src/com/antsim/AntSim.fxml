@@ -13,6 +13,7 @@
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -36,6 +37,9 @@
                      <image>
                         <Image url="@../../resources/GloryHole.png" />
                      </image>
+                     <effect>
+                        <DropShadow height="12.1" radius="16.669999999999998" width="56.58" />
+                     </effect>
                   </ImageView>
                </children>
             </Pane>

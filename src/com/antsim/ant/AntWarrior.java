@@ -34,9 +34,9 @@ public class AntWarrior extends Ant implements IBehavior {
 	}
 
 	public void moveImage(int newX, int newY) {
-		if (newX > 20 && newX < 660)
+		if (newX < 760)
 			antWarriorImageView.setX(newX);
-		if (newY < 760)
+		if (newY > 20 && newY < 660)
 			antWarriorImageView.setY(newY);
 	}
 

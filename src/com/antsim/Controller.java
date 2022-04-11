@@ -234,6 +234,7 @@ public class Controller implements Initializable {
 	}
 
 	public void changeAntWarriorLifeTime() {
+		//TODO
 		int tmp = Integer.parseInt(antWarriorLifeTimeTextF.getText());
 		if(tmp >= Habitat.MIN_LIFE_TIME && tmp <= Habitat.MAX_LIFE_TIME) {
 			model.setAntWarriorLifeTime(tmp);
