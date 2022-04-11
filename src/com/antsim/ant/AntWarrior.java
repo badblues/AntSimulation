@@ -9,7 +9,6 @@ public class AntWarrior extends Ant implements IBehavior {
 
 	final ImageView antWarriorImageView = new ImageView(new Image("resources/ant_warrior.png"));
 	Group root;
-	AntWarriorAI antWarriorAI;
 
 
 	public AntWarrior() {
@@ -26,8 +25,6 @@ public class AntWarrior extends Ant implements IBehavior {
 		spawnTime = time;
 		lifeTime = lifeT;
 		this.id = id;
-		antWarriorAI = new AntWarriorAI(this);
-		antWarriorAI.start();
 	}
 
 	public void moveImage(int newX, int newY) {
@@ -36,7 +33,6 @@ public class AntWarrior extends Ant implements IBehavior {
 	}
 
 	public void destroyAnt() {
-		antWarriorAI.kill();
 		root.getChildren().remove(antWarriorImageView);
 	}
 

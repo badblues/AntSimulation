@@ -1,5 +1,7 @@
 package com.antsim;
 
+import com.antsim.ai.AntWarriorAI;
+import com.antsim.ai.AntWorkerAI;
 import com.antsim.ant.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -15,8 +17,11 @@ import java.util.*;
 public class Controller implements Initializable {
 
 	Habitat model = Habitat.getInstance();
+	AntWarriorAI antWarriorAI = new AntWarriorAI(model.getAntsVector());
+	AntWorkerAI antWorkerAI = new AntWorkerAI(model.getAntsVector());
 	AlertsView alertsView = AlertsView.getInstance();
 	Timer timer;
+
 	private boolean canShowStatistics = false;
 
 	@FXML
@@ -54,6 +59,9 @@ public class Controller implements Initializable {
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
+
+		launchAIThreads();
+
 		String[] chances = {"0", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100"};
 		antWarriorChanceBox.getItems().addAll(chances);
 		antWarriorChanceBox.setValue("100");
@@ -116,6 +124,7 @@ public class Controller implements Initializable {
 		pauseButton.setDisable(false);
 		pauseMenuItem.setDisable(false);
 		timer = startTimer();
+		startAllMovement();
 	}
 
 
@@ -131,6 +140,7 @@ public class Controller implements Initializable {
 				if(option.get() == ButtonType.OK)
 					endSimulation();
 		}
+		stopAllMovement();
 	}
 
 	public void endSimulation() {
@@ -332,6 +342,25 @@ public class Controller implements Initializable {
 	private void updateStatisticText() {
 		alertsView.getEndSimulationAlert().setHeaderText("Simulation time: " + model.getTime()
 				+ "\nWarriors: " + model.getAntWarriorCount() + "\nWorker: " + model.getAntWorkerCount());
+	}
+
+	private void launchAIThreads() {
+		antWarriorAI.start();
+		antWorkerAI.start();
+	}
+
+	private void stopAllMovement() {
+//		try {
+//			antWarriorAI.wait();
+//			antWorkerAI.wait();
+//		} catch(InterruptedException e) {
+//			e.printStackTrace();
+//		}
+	}
+
+	private void startAllMovement() {
+//		antWarriorAI.notify();
+//		antWorkerAI.notify();
 	}
 
 }
