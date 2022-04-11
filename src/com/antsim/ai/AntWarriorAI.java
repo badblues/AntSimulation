@@ -16,20 +16,21 @@ public class AntWarriorAI extends BaseAI{
 
 	@Override
 	public void run() {
-		System.out.println("huy govno");
 		ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-		scheduler.schedule(() -> {
-			System.out.println("govno");
-			synchronized(antsVector) {
-				for (Ant antWarrior : antsVector) {
-					if (antWarrior instanceof  AntWarrior) {
-						antWarrior.setPosX(antWarrior.getPosX() + 5);
-						antWarrior.setPosY(antWarrior.getPosY() + 10);
-						System.out.println(antWarrior.getPosX() + " " + antWarrior.getPosY());
-						antWarrior.moveImage(antWarrior.getPosX(), antWarrior.getPosY());
+		scheduler.scheduleAtFixedRate(() -> {
+			try {
+				synchronized(antsVector) {
+					for (Ant antWarrior : antsVector) {
+						if (antWarrior instanceof  AntWarrior) {
+							antWarrior.setPosX(antWarrior.getPosX() + 5);
+							antWarrior.setPosY(antWarrior.getPosY() + 10);
+							antWarrior.moveImage(antWarrior.getPosX(), antWarrior.getPosY());
+						}
 					}
 				}
+			} catch(Exception e) {
+				e.printStackTrace();
 			}
-		}, 1000, TimeUnit.MILLISECONDS);
+		}, 0, 1000, TimeUnit.MILLISECONDS);
 	}
 }

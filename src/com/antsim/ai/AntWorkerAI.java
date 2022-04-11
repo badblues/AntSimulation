@@ -20,10 +20,8 @@ public class AntWorkerAI extends BaseAI{
 
 	@Override
 	public void run() {
-		System.out.println("huy govno");
 		ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-		scheduler.schedule(() -> {
-			System.out.println("govno");
+		scheduler.scheduleAtFixedRate(() -> {
 			synchronized(antsVector) {
 				for (Ant antWorker : antsVector) {
 					if (antWorker instanceof AntWorker) {
@@ -38,13 +36,12 @@ public class AntWorkerAI extends BaseAI{
 						//			}
 						int x = antWorker.getPosX();
 						int y = antWorker.getPosY() + 10;
-						System.out.println(x + " " + y);
 						antWorker.moveImage(x, y);
 						antWorker.setPosX(x);
 						antWorker.setPosY(y);
 					}
 				}
 			}
-		}, 1000, TimeUnit.MILLISECONDS);
+		}, 0, 1000, TimeUnit.MILLISECONDS);
 	}
 }

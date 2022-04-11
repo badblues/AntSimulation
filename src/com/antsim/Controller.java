@@ -350,17 +350,17 @@ public class Controller implements Initializable {
 	}
 
 	private void stopAllMovement() {
-//		try {
-//			antWarriorAI.wait();
-//			antWorkerAI.wait();
-//		} catch(InterruptedException e) {
-//			e.printStackTrace();
-//		}
+		try {
+			antWarriorAI.wait();
+			antWorkerAI.wait();
+		} catch(InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void startAllMovement() {
-//		antWarriorAI.notify();
-//		antWorkerAI.notify();
+		antWarriorAI.notify();
+		antWorkerAI.notify();
 	}
 
 }

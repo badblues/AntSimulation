@@ -35,7 +35,4 @@ public class AntWarrior extends Ant implements IBehavior {
 	public void destroyAnt() {
 		root.getChildren().remove(antWarriorImageView);
 	}
-
-
-
 }
