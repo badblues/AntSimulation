@@ -149,10 +149,12 @@ public class Controller implements Initializable {
 		startButton.setDisable(false);
 		startMenuItem.setDisable(false);
 		if(timer != null) timer.cancel();
-		for(Ant ant : model.getAntsVector()) {
-			ant.destroyAnt();
+		synchronized(model.getAntsVector()){
+			for(Ant ant : model.getAntsVector()) {
+				ant.destroyAnt();
+			}
+			model.getAntsVector().clear();
 		}
-		model.getAntsVector().clear();
 		model.getAntsIdsHashSet().clear();
 		model.getAntsSpawnTimeTree().clear();
 		model.setAntWarriorCount(0);
@@ -264,7 +266,9 @@ public class Controller implements Initializable {
 		AntWarrior a = new AntWarrior();
 		int id = getNewID();
 		a.spawn(antsArea, time, model.getAntWarriorLifeTime(), id);
-		model.getAntsVector().add(a);
+		synchronized(model.getAntsVector()){
+			model.getAntsVector().add(a);
+		}
 		model.getAntsIdsHashSet().add(id);
 		model.getAntsSpawnTimeTree().put(id, time);
 		model.setAntWarriorCount(model.getAntWarriorCount() + 1);
@@ -275,7 +279,9 @@ public class Controller implements Initializable {
 		AntWorker a = new AntWorker();
 		int id = getNewID();
 		a.spawn(antsArea, time, model.getAntWorkerLifeTime(), id);
-		model.getAntsVector().add(a);
+		synchronized(model.getAntsVector()) {
+			model.getAntsVector().add(a);
+		}
 		model.getAntsIdsHashSet().add(id);
 		model.getAntsSpawnTimeTree().put(id, time);
 		model.setAntWorkerCount(model.getAntWorkerCount() + 1);
@@ -286,19 +292,21 @@ public class Controller implements Initializable {
 		ant.destroyAnt();
 		model.getAntsIdsHashSet().remove(ant.getId());
 		model.getAntsSpawnTimeTree().remove(ant.getId());
-		model.getAntsVector().remove(ant);
+		synchronized(model.getAntsVector()) {
+			model.getAntsVector().remove(ant);
+		}
 		if(ant instanceof AntWarrior) model.setAntWarriorCount(model.getAntWarriorCount() - 1);
 		else model.setAntWorkerCount(model.getAntWorkerCount() - 1);
 	}
 
 	private void checkLifeTime(int time) {
-		for(int i = 0; i < model.getAntsVector().size(); i++) {
-			Ant ant = model.getAntsVector().get(i);
-			if(ant.getSpawnTime() + ant.getLifeTime() == time) {
-				removeAnt(ant);
-				i--;
+			for(int i = 0; i < model.getAntsVector().size(); i++) {
+				Ant ant = model.getAntsVector().get(i);
+				if(ant.getSpawnTime() + ant.getLifeTime() == time) {
+					removeAnt(ant);
+					i--;
+				}
 			}
-		}
 	}
 
 	private void update(int time) {

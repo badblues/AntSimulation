@@ -20,17 +20,22 @@ public class AntWarriorAI extends BaseAI{
 		scheduler.scheduleAtFixedRate(() -> {
 			try {
 				synchronized(antsVector) {
-					for (Ant antWarrior : antsVector) {
-						if (antWarrior instanceof  AntWarrior) {
-							antWarrior.setPosX(antWarrior.getPosX() + 5);
-							antWarrior.setPosY(antWarrior.getPosY() + 10);
-							antWarrior.moveImage(antWarrior.getPosX(), antWarrior.getPosY());
+					for (Ant ant : antsVector) {
+						if (ant instanceof  AntWarrior) {
+							move((AntWarrior) ant);
 						}
 					}
 				}
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
-		}, 0, 1000, TimeUnit.MILLISECONDS);
+		}, 0, 35, TimeUnit.MILLISECONDS);
+	}
+
+	private void move(AntWarrior antWarrior) {
+		antWarrior.setMovementAngle(antWarrior.getMovementAngle() + Math.PI/50 * antWarrior.getMovementDirection());
+		antWarrior.setPosX(antWarrior.getSpawnX() + (int)(AntWarrior.movementRadius * Math.cos(antWarrior.getMovementAngle())));
+		antWarrior.setPosY(antWarrior.getSpawnY() + (int)(AntWarrior.movementRadius * Math.sin(antWarrior.getMovementAngle())));
+		antWarrior.moveImage(antWarrior.getPosX(), antWarrior.getPosY());
 	}
 }

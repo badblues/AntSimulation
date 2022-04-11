@@ -23,25 +23,41 @@ public class AntWorkerAI extends BaseAI{
 		ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 		scheduler.scheduleAtFixedRate(() -> {
 			synchronized(antsVector) {
-				for (Ant antWorker : antsVector) {
-					if (antWorker instanceof AntWorker) {
-						//			int x = antWorker.getPosX();
-						//			int y = antWorker.getPosY();
-						//			if (antWorker.getDestination() == Destination.HOME) {
-						//				x += (homeX - x) / 5;
-						//				y += (homeY - y) / 5;
-						//			} else {
-						//				x += (antWorker.getSpawnX() - x) / 5;
-						//				y += (antWorker.getPosY() - y) / 5;
-						//			}
-						int x = antWorker.getPosX();
-						int y = antWorker.getPosY() + 10;
-						antWorker.moveImage(x, y);
-						antWorker.setPosX(x);
-						antWorker.setPosY(y);
+				for (Ant ant : antsVector) {
+					if (ant instanceof AntWorker) {
+						move((AntWorker) ant);
 					}
 				}
 			}
-		}, 0, 1000, TimeUnit.MILLISECONDS);
+		}, 0, 35, TimeUnit.MILLISECONDS);
+	}
+
+	private void move(AntWorker antWorker) {
+		int x = antWorker.getPosX();
+		int y = antWorker.getPosY();
+		if (x == homeX && y == homeY || x == antWorker.getSpawnX() && y == antWorker.getSpawnY())
+			antWorker.changeDestination();
+		if (antWorker.getDestination() == Destination.HOME) {
+			double dx = (double)(homeX - x) / 10;
+			if (Math.abs(dx) < 1)
+				dx = 1 * Math.signum(dx);
+			double dy = (double)(homeY - y) / 10;
+			if (Math.abs(dy) < 1)
+				dy = 1 * Math.signum(dy);
+			x += dx;
+			y += dy;
+		} else {
+			double dx = (double)(antWorker.getSpawnX() - x) / 10;
+			if (Math.abs(dx) < 1)
+				dx = 1 * Math.signum(dx);
+			double dy = (double)(antWorker.getSpawnY() - y) / 10;
+			if (Math.abs(dy) < 1)
+				dy = 1 * Math.signum(dy);
+			x += dx;
+			y += dy;
+		}
+		antWorker.moveImage(x, y);
+		antWorker.setPosX(x);
+		antWorker.setPosY(y);
 	}
 }
