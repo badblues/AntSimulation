@@ -30,4 +30,8 @@ public abstract class BaseAI extends Thread {
 		}
 	}
 
+	public boolean isPaused() {
+		return paused;
+	}
+
 }

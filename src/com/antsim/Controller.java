@@ -256,6 +256,13 @@ public class Controller implements Initializable {
 		}
 	}
 
+	public void changeMovement() {
+		if (antWarriorAI.isPaused())
+			startAllMovement();
+		else
+			stopAllMovement();
+	}
+
 	private int getNewID() {
 		Random rand = new Random();
 		int id = Math.abs(rand.nextInt(1000));
@@ -364,8 +371,10 @@ public class Controller implements Initializable {
 	}
 
 	private void startAllMovement() {
-		antWarriorAI.myresume();
-		antWorkerAI.myresume();
+		if (startButton.isDisabled()) {  //if simulation stopped
+			antWarriorAI.myresume();
+			antWorkerAI.myresume();
+		}
 	}
 
 }

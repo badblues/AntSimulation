@@ -71,11 +71,16 @@
                         <Font name="Hack Regular" size="18.0" />
                      </font>
                   </CheckBox>
-                  <Button layoutX="35.0" layoutY="245.0" mnemonicParsing="false" onAction="#showAliveAnts" text="Show alive ants">
+                  <Button layoutX="59.0" layoutY="248.0" mnemonicParsing="false" onAction="#showAliveAnts" text="Show alive ants">
                      <font>
                         <Font name="Noto Sans Vai Regular" size="18.0" />
                      </font>
                   </Button>
+                  <CheckBox layoutX="35.0" layoutY="320.0" mnemonicParsing="false" onAction="#changeMovement" selected="true" text="Movement">
+                     <font>
+                        <Font name="Noto Sans Vai Regular" size="18.0" />
+                     </font>
+                  </CheckBox>
                </children>
             </Pane>
             <Pane layoutX="1040.0" prefHeight="720.0" prefWidth="240.0">
