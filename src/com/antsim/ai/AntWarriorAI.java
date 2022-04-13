@@ -7,14 +7,8 @@ import java.util.Vector;
 
 public class AntWarriorAI extends BaseAI{
 
-	private volatile boolean running = true;
-	private volatile boolean paused = false;
-	private final Object pauseLock = new Object();
-
-
 	public AntWarriorAI(Vector<Ant> antsVector) {
 		super(antsVector);
-		setName("Warriors movement name");
 	}
 
 	@Override
@@ -56,23 +50,6 @@ public class AntWarriorAI extends BaseAI{
 		antWarrior.setPosX(antWarrior.getSpawnX() + (int)(AntWarrior.movementRadius * Math.cos(antWarrior.getMovementAngle())));
 		antWarrior.setPosY(antWarrior.getSpawnY() + (int)(AntWarrior.movementRadius * Math.sin(antWarrior.getMovementAngle())));
 		antWarrior.moveImage(antWarrior.getPosX(), antWarrior.getPosY());
-	}
-
-
-	public void mystop() {
-		running = false;
-		myresume();
-	}
-
-	public void pause() {
-		paused = true;
-	}
-
-	public void myresume() {
-		synchronized (pauseLock) {
-			paused = false;
-			pauseLock.notifyAll();
-		}
 	}
 
 }
