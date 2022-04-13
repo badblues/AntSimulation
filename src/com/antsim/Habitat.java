@@ -40,8 +40,6 @@ public class Habitat extends Application {
 	private int timeToAntWorkerSpawn = antWorkerSpawnDelay;
 	private int antWarriorLifeTime = 10;
 	private int antWorkerLifeTime = 10;
-	final AntWarriorAI antWarriorAI = new AntWarriorAI(getAntsVector());
-	final AntWorkerAI antWorkerAI = new AntWorkerAI(getAntsVector());
 
 	static synchronized Habitat getInstance() {
 		if(instance == null)
@@ -165,13 +163,5 @@ public class Habitat extends Application {
 	void setAntWorkerLifeTime(int time) {
         antWorkerLifeTime = time;
     }
-
-	AntWarriorAI getAntWarriorAI() {
-		return antWarriorAI;
-	}
-
-	AntWorkerAI getAntWorkerAI() {
-		return antWorkerAI;
-	}
 
 }

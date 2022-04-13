@@ -19,6 +19,8 @@ public class Controller implements Initializable {
 	Habitat model = Habitat.getInstance();
 	AlertsView alertsView = AlertsView.getInstance();
 	Timer timer;
+	final AntWarriorAI antWarriorAI = new AntWarriorAI(model.getAntsVector());
+	final AntWorkerAI antWorkerAI = new AntWorkerAI(model.getAntsVector());
 
 	private boolean canShowStatistics = false;
 
@@ -352,24 +354,18 @@ public class Controller implements Initializable {
 	}
 
 	private void launchAIThreads() {
-		model.getAntWarriorAI().start();
-		model.getAntWorkerAI().start();
+		antWarriorAI.start();
+		antWorkerAI.start();
 	}
 
 	private void stopAllMovement() {
-		System.out.println("hyu govno1");
-		model.getAntWarriorAI().pause();
-		System.out.println("hyu govno2");
-		//model.getAntWorkerAI().pause();
+		antWarriorAI.pause();
+		antWorkerAI.pause();
 	}
 
 	private void startAllMovement() {
-		synchronized(model.getAntWarriorAI()) {
-			model.getAntWarriorAI().notify();
-		}
-		synchronized(model.getAntWorkerAI()) {
-			model.getAntWorkerAI().notify();
-		}
+		antWarriorAI.myresume();
+		antWorkerAI.myresume();
 	}
 
 }

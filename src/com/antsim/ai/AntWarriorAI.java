@@ -47,20 +47,6 @@ public class AntWarriorAI extends BaseAI{
 					}
 				}
 			}
-//			ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-//			scheduler.scheduleAtFixedRate(() -> {
-//				try {
-//					synchronized(antsVector) {
-//						for (Ant ant : antsVector) {
-//							if (ant instanceof  AntWarrior) {
-//								move((AntWarrior) ant);
-//							}
-//						}
-//					}
-//				} catch(Exception e) {
-//					e.printStackTrace();
-//				}
-//			}, 0, 35, TimeUnit.MILLISECONDS);
 			synchronized(antsVector) {
 				for (Ant ant : antsVector) {
 					if (ant instanceof  AntWarrior) {
