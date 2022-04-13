@@ -1,13 +1,10 @@
 package com.antsim.ai;
 
 import com.antsim.ant.Ant;
-import com.antsim.ant.AntWarrior;
 import com.antsim.ant.AntWorker;
 
 import java.util.Vector;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+
 
 public class AntWorkerAI extends BaseAI{
 
@@ -28,25 +25,17 @@ public class AntWorkerAI extends BaseAI{
 	public void run() {
 		while (running) {
 			synchronized (pauseLock) {
-				if (!running) { // may have changed while waiting to
-					// synchronize on pauseLock
+				if (!running) {
 					break;
 				}
 				if (paused) {
 					try {
-						synchronized (pauseLock) {
-							pauseLock.wait(); // will cause this Thread to block until
-							// another thread calls pauseLock.notifyAll()
-							// Note that calling wait() will
-							// relinquish the synchronized lock that this
-							// thread holds on pauseLock so another thread
-							// can acquire the lock to call notifyAll()
-							// (link with explanation below this code)
-						}
-					} catch (InterruptedException ex) {
+						pauseLock.wait();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
 						break;
 					}
-					if (!running) { // running might have changed since we paused
+					if (!running) {
 						break;
 					}
 				}
@@ -97,21 +86,16 @@ public class AntWorkerAI extends BaseAI{
 
 	public void mystop() {
 		running = false;
-		// you might also want to interrupt() the Thread that is
-		// running this Runnable, too, or perhaps call:
-		myresume();
-		// to unblock
 	}
 
 	public void pause() {
-		// you may want to throw an IllegalStateException if !running
 		paused = true;
 	}
 
 	public void myresume() {
 		synchronized (pauseLock) {
 			paused = false;
-			pauseLock.notifyAll(); // Unblocks thread
+			pauseLock.notifyAll();
 		}
 	}
 
