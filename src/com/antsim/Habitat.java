@@ -1,5 +1,7 @@
 package com.antsim;
 
+import com.antsim.ai.AntWarriorAI;
+import com.antsim.ai.AntWorkerAI;
 import com.antsim.ant.*;
 
 import javafx.application.*;
@@ -13,7 +15,6 @@ import java.util.*;
 //TODO поиск в дереве по value и удаление по Id
 //TODO стоп тредов по паузе
 //TODO отключение ии по кнопкам
-//TODO переделать движение муравьям
 //TODO разобраться с синхронизацией потоков
 //TODO выпадающие списки в панели управления для выставления приоритетов потоков
 
@@ -39,6 +40,8 @@ public class Habitat extends Application {
 	private int timeToAntWorkerSpawn = antWorkerSpawnDelay;
 	private int antWarriorLifeTime = 10;
 	private int antWorkerLifeTime = 10;
+	final AntWarriorAI antWarriorAI = new AntWarriorAI(getAntsVector());
+	final AntWorkerAI antWorkerAI = new AntWorkerAI(getAntsVector());
 
 	static synchronized Habitat getInstance() {
 		if(instance == null)
@@ -162,4 +165,13 @@ public class Habitat extends Application {
 	void setAntWorkerLifeTime(int time) {
         antWorkerLifeTime = time;
     }
+
+	AntWarriorAI getAntWarriorAI() {
+		return antWarriorAI;
+	}
+
+	AntWorkerAI getAntWorkerAI() {
+		return antWorkerAI;
+	}
+
 }

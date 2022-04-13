@@ -15,6 +15,7 @@ public class AntWorkerAI extends BaseAI{
 
 	public AntWorkerAI(Vector<Ant> antsVector) {
 		super(antsVector);
+		setName("Workers movement thread");
 	}
 
 
@@ -60,4 +61,5 @@ public class AntWorkerAI extends BaseAI{
 		antWorker.setPosX(x);
 		antWorker.setPosY(y);
 	}
+
 }

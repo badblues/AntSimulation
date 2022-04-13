@@ -17,8 +17,6 @@ import java.util.*;
 public class Controller implements Initializable {
 
 	Habitat model = Habitat.getInstance();
-	final AntWarriorAI antWarriorAI = new AntWarriorAI(model.getAntsVector());
-	final AntWorkerAI antWorkerAI = new AntWorkerAI(model.getAntsVector());
 	AlertsView alertsView = AlertsView.getInstance();
 	Timer timer;
 
@@ -354,31 +352,23 @@ public class Controller implements Initializable {
 	}
 
 	private void launchAIThreads() {
-		antWarriorAI.start();
-		antWorkerAI.start();
+		model.getAntWarriorAI().start();
+		model.getAntWorkerAI().start();
 	}
 
 	private void stopAllMovement() {
 		System.out.println("hyu govno1");
-		try {
-			synchronized(antWarriorAI) {
-				antWarriorAI.wait();
-			}
-			synchronized(antWorkerAI) {
-				antWorkerAI.wait();
-			}
-		} catch(InterruptedException e) {
-			e.printStackTrace();
-		}
+		model.getAntWarriorAI().pause();
 		System.out.println("hyu govno2");
+		//model.getAntWorkerAI().pause();
 	}
 
 	private void startAllMovement() {
-		synchronized(antWarriorAI) {
-			antWarriorAI.notify();
+		synchronized(model.getAntWarriorAI()) {
+			model.getAntWarriorAI().notify();
 		}
-		synchronized(antWorkerAI) {
-			antWorkerAI.notify();
+		synchronized(model.getAntWorkerAI()) {
+			model.getAntWorkerAI().notify();
 		}
 	}
 
