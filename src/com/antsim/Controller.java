@@ -18,6 +18,7 @@ public class Controller implements Initializable {
 
 	Habitat model = Habitat.getInstance();
 	AlertsView alertsView = AlertsView.getInstance();
+	//Console console = Console.getInstance();
 	Timer timer;
 	final AntWarriorAI antWarriorAI = new AntWarriorAI(model.getAntsVector());
 	final AntWorkerAI antWorkerAI = new AntWorkerAI(model.getAntsVector());
@@ -37,9 +38,9 @@ public class Controller implements Initializable {
 	@FXML
 	RadioButton hideTimeButton;
 	@FXML
-	ComboBox<String> antWarriorChanceBox;
+	ComboBox<Integer> antWarriorChanceBox;
 	@FXML
-	ComboBox<String> antWorkerChanceBox;
+	ComboBox<Integer> antWorkerChanceBox;
 	@FXML
 	Slider antWarriorSpawnDelaySlider;
 	@FXML
@@ -56,17 +57,31 @@ public class Controller implements Initializable {
 	MenuItem startMenuItem;
 	@FXML
 	MenuItem pauseMenuItem;
+	@FXML
+	ComboBox<Integer> antWarriorThreadPriorityBox;
+	@FXML
+	ComboBox<Integer> antWorkerThreadPriorityBox;
+	@FXML
+	ComboBox<Integer> mainThreadPriorityBox;
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
 
 		launchAIThreads();
 
-		String[] chances = {"0", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100"};
+		setDefaultValuesToView();
+
+		Integer[] chances = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
 		antWarriorChanceBox.getItems().addAll(chances);
-		antWarriorChanceBox.setValue("100");
 		antWorkerChanceBox.getItems().addAll(chances);
-		antWorkerChanceBox.setValue("100");
+
+		Integer[] priorities = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+		antWarriorThreadPriorityBox.getItems().addAll(priorities);
+		antWarriorThreadPriorityBox.setValue(5);
+		antWorkerThreadPriorityBox.getItems().addAll(priorities);
+		antWorkerThreadPriorityBox.setValue(5);
+		mainThreadPriorityBox.getItems().addAll(priorities);
+		mainThreadPriorityBox.setValue(5);
 
 		antWarriorSpawnDelaySlider.valueProperty().addListener((observableValue, number, newValue) -> {
 			model.setAntWarriorSpawnDelay(newValue.intValue());
@@ -177,6 +192,12 @@ public class Controller implements Initializable {
 						hideTimeButton.setSelected(true);
 					}
 				}
+				case C -> {
+					showConsoleArea();
+				}
+				case ESCAPE -> {
+					hideConsoleArea();
+				}
 			}
 		}
 
@@ -195,65 +216,86 @@ public class Controller implements Initializable {
 	public void showAliveAnts() {
 		pauseSimulation();
 		String s = "Ants:\n";
-		for(Ant ant : model.getAntsVector()) {
-			int id = ant.getId();
-			s = s.concat(ant.getClass().getSimpleName() + " ID:" + id + " - Spawn time: " + model.getAntsSpawnTimeTree().get(id) + "s\n");
+		synchronized(model.getAntsVector()) {
+			for(Ant ant : model.getAntsVector()) {
+				int id = ant.getId();
+				s = s.concat(ant.getClass().getSimpleName() + " ID:" + id + " - Spawn time: " + model.getAntsSpawnTimeTree().get(id) + "s\n");
+			}
 		}
 		alertsView.getAliveAntsAlert().setContentText(s);
 		alertsView.getAliveAntsAlert().show();
 	}
 
 	public void changeAntWarriorSpawnChance() {
-		model.setAntWarriorSpawnChance(Integer.parseInt(antWarriorChanceBox.getValue()));
+		model.setAntWarriorSpawnChance(antWarriorChanceBox.getValue());
 	}
 
 	public void changeAntWorkerSpawnChance() {
-		model.setAntWorkerSpawnChance(Integer.parseInt(antWorkerChanceBox.getValue()));
+		model.setAntWorkerSpawnChance(antWorkerChanceBox.getValue());
 	}
 
 	public void changeAntWarriorSpawnDelayTextF() {
-		int tmp = Integer.parseInt(antWarriorSpawnDelayTextF.getText());
-		if(tmp >= Habitat.MIN_SPAWN_DELAY && tmp <= Habitat.MAX_SPAWN_DELAY) {
-			model.setAntWarriorSpawnDelay(tmp);
-			antWarriorSpawnDelaySlider.setValue(tmp);
-		} else {
-			alertsView.getInvalidValueAlert().setContentText("Choose value between " + Habitat.MIN_SPAWN_DELAY + " and " + Habitat.MAX_SPAWN_DELAY);
-			alertsView.getInvalidValueAlert().show();
+		if (!Objects.equals(antWarriorSpawnDelayTextF.getText(), "")) {
+			int tmp = Integer.parseInt(antWarriorSpawnDelayTextF.getText());
+			if(tmp >= Habitat.MIN_SPAWN_DELAY && tmp <= Habitat.MAX_SPAWN_DELAY) {
+				model.setAntWarriorSpawnDelay(tmp);
+				antWarriorSpawnDelaySlider.setValue(tmp);
+			} else {
+				alertsView.getInvalidValueAlert().setContentText("Choose value between " + Habitat.MIN_SPAWN_DELAY + " and " + Habitat.MAX_SPAWN_DELAY);
+				alertsView.getInvalidValueAlert().show();
+			}
 		}
 	}
 
 	public void changeAntWorkerSpawnDelayTextF() {
-		int tmp = Integer.parseInt(antWorkerSpawnDelayTextF.getText());
-		if(tmp >= Habitat.MIN_SPAWN_DELAY && tmp <= Habitat.MAX_SPAWN_DELAY) {
-			model.setAntWorkerSpawnDelay(tmp);
-			antWorkerSpawnDelaySlider.setValue(tmp);
-		} else {
-			alertsView.getInvalidValueAlert().setContentText("Choose value between " + Habitat.MIN_SPAWN_DELAY + " and " + Habitat.MAX_SPAWN_DELAY);
-			alertsView.getInvalidValueAlert().show();
+		if (!Objects.equals(antWorkerSpawnDelayTextF.getText(), "")) {
+			int tmp = Integer.parseInt(antWorkerSpawnDelayTextF.getText());
+			if(tmp >= Habitat.MIN_SPAWN_DELAY && tmp <= Habitat.MAX_SPAWN_DELAY) {
+				model.setAntWorkerSpawnDelay(tmp);
+				antWorkerSpawnDelaySlider.setValue(tmp);
+			} else {
+				alertsView.getInvalidValueAlert().setContentText("Choose value between " + Habitat.MIN_SPAWN_DELAY + " and " + Habitat.MAX_SPAWN_DELAY);
+				alertsView.getInvalidValueAlert().show();
+			}
 		}
 	}
 
 	public void changeAntWarriorLifeTime() {
-		//TODO
-		int tmp = Integer.parseInt(antWarriorLifeTimeTextF.getText());
-		if(tmp >= Habitat.MIN_LIFE_TIME && tmp <= Habitat.MAX_LIFE_TIME) {
-			model.setAntWarriorLifeTime(tmp);
-		} else {
-			alertsView.getInvalidValueAlert().setContentText("Choose value between "+Habitat.MIN_LIFE_TIME+" and "+Habitat.MAX_LIFE_TIME);
-			alertsView.getInvalidValueAlert().show();
+		if (!Objects.equals(antWarriorLifeTimeTextF.getText(), "")) {
+			int tmp = Integer.parseInt(antWarriorLifeTimeTextF.getText());
+			if(tmp >= Habitat.MIN_LIFE_TIME && tmp <= Habitat.MAX_LIFE_TIME) {
+				model.setAntWarriorLifeTime(tmp);
+			} else {
+				alertsView.getInvalidValueAlert().setContentText("Choose value between "+Habitat.MIN_LIFE_TIME+" and "+Habitat.MAX_LIFE_TIME);
+				alertsView.getInvalidValueAlert().show();
+			}
 		}
 	}
 
 
 	public void changeAntWorkerLifeTime() {
-
-		int tmp = Integer.parseInt(antWorkerLifeTimeTextF.getText());
-		if(tmp >= Habitat.MIN_LIFE_TIME && tmp <= Habitat.MAX_LIFE_TIME) {
-			model.setAntWorkerLifeTime(tmp);
-		} else {
-			alertsView.getInvalidValueAlert().setContentText("Choose value between "+Habitat.MIN_LIFE_TIME+" and "+Habitat.MAX_LIFE_TIME);
-			alertsView.getInvalidValueAlert().show();
+		if (!Objects.equals(antWorkerLifeTimeTextF.getText(), "")) {
+			int tmp = Integer.parseInt(antWorkerLifeTimeTextF.getText());
+			if(tmp >= Habitat.MIN_LIFE_TIME && tmp <= Habitat.MAX_LIFE_TIME) {
+				model.setAntWorkerLifeTime(tmp);
+			} else {
+				alertsView.getInvalidValueAlert().setContentText("Choose value between " + Habitat.MIN_LIFE_TIME +
+						" and " + Habitat.MAX_LIFE_TIME);
+				alertsView.getInvalidValueAlert().show();
+			}
 		}
+	}
+
+	public void changeAntWarriorThreadPriority() {
+		antWarriorAI.setPriority(antWarriorThreadPriorityBox.getValue());
+	}
+
+	public void changeAntWorkerThreadPriority() {
+		antWorkerAI.setPriority(antWorkerThreadPriorityBox.getValue());
+	}
+
+	public void changeMainThreadPriority() {
+		Thread.currentThread().setPriority(mainThreadPriorityBox.getValue());
 	}
 
 	public void changeMovement() {
@@ -261,6 +303,26 @@ public class Controller implements Initializable {
 			startAllMovement();
 		else
 			stopAllMovement();
+	}
+
+	public void setDefaultValuesToView() {
+		antWarriorChanceBox.setValue(model.getAntWarriorSpawnChance());
+		antWorkerChanceBox.setValue(model.getAntWorkerSpawnChance());
+		antWarriorSpawnDelaySlider.setValue(model.getAntWarriorSpawnDelay());
+		antWorkerSpawnDelaySlider.setValue(model.getAntWorkerSpawnDelay());
+		antWarriorSpawnDelayTextF.setText(Integer.toString(model.getAntWarriorSpawnDelay()));
+		antWorkerSpawnDelayTextF.setText(Integer.toString(model.getAntWorkerSpawnDelay()));
+		antWarriorLifeTimeTextF.setText(Integer.toString(model.getAntWarriorLifeTime()));
+		antWorkerLifeTimeTextF.setText(Integer.toString(model.getAntWorkerLifeTime()));
+	}
+
+	//TODO govno
+	public void showConsoleArea() {
+		//console.showConsole();
+	}
+
+	public void hideConsoleArea() {
+		//console.hideConsole();
 	}
 
 	private int getNewID() {
@@ -303,11 +365,14 @@ public class Controller implements Initializable {
 		synchronized(model.getAntsVector()) {
 			model.getAntsVector().remove(ant);
 		}
-		if(ant instanceof AntWarrior) model.setAntWarriorCount(model.getAntWarriorCount() - 1);
-		else model.setAntWorkerCount(model.getAntWorkerCount() - 1);
+		if (ant instanceof AntWarrior)
+			model.setAntWarriorCount(model.getAntWarriorCount() - 1);
+		else
+			model.setAntWorkerCount(model.getAntWorkerCount() - 1);
 	}
 
 	private void checkLifeTime(int time) {
+		synchronized(model.getAntsVector()) {
 			for(int i = 0; i < model.getAntsVector().size(); i++) {
 				Ant ant = model.getAntsVector().get(i);
 				if(ant.getSpawnTime() + ant.getLifeTime() == time) {
@@ -315,6 +380,13 @@ public class Controller implements Initializable {
 					i--;
 				}
 			}
+		}
+	}
+
+	private void updateImages() {
+		for (Ant ant : model.getAntsVector()) {
+			ant.moveImage();
+		}
 	}
 
 	private void update(int time) {
@@ -323,11 +395,9 @@ public class Controller implements Initializable {
 		model.setTimeToAntWorkerSpawn(model.getTimeToAntWorkerSpawn() - 1);
 		model.setTime(time);
 		updateTimerText();
-
 		if(model.getTimeToAntWarriorSpawn() <= 0 && rand.nextInt(100) < model.getAntWarriorSpawnChance()) {
 			spawnWarrior(time);
 		}
-
 		if(model.getTimeToAntWorkerSpawn() <= 0 && rand.nextInt(100) < model.getAntWorkerSpawnChance()) {
 			spawnWorker(time);
 		}
@@ -372,11 +442,8 @@ public class Controller implements Initializable {
 
 	private void startAllMovement() {
 		if (startButton.isDisabled()) {  //if simulation stopped
-			antWarriorAI.myresume();
-			antWorkerAI.myresume();
+			antWarriorAI.unpause();
+			antWorkerAI.unpause();
 		}
 	}
-
 }
-
-

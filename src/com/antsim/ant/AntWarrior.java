@@ -28,16 +28,20 @@ public class AntWarrior extends Ant implements IBehavior {
 		root.getChildren().add(antWarriorImageView);
 		this.root = root;
 
-		spawnTime = time;
+		spawnTime = time; 
 		lifeTime = lifeT;
 		this.id = id;
 	}
 
-	public void moveImage(int newX, int newY) {
-		if (newX < 760)
-			antWarriorImageView.setX(newX);
-		if (newY > 20 && newY < 660)
-			antWarriorImageView.setY(newY);
+	public void moveImage() {
+		if (posX > 40 && posX < 760)
+			antWarriorImageView.setX(posX);
+		if (posY > 20 && posY < 660)
+			antWarriorImageView.setY(posY);
+		if (movementDirection == 1)
+			antWarriorImageView.setRotate(movementAngle * 180/Math.PI + 180);
+		else
+			antWarriorImageView.setRotate(movementAngle * 180/Math.PI);
 	}
 
 	public void destroyAnt() {

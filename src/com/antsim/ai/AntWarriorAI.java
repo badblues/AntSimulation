@@ -13,19 +13,13 @@ public class AntWarriorAI extends BaseAI{
 
 	@Override
 	public void run() {
-		while (running) {
+		while (true) {
 			synchronized (pauseLock) {
-				if (!running) {
-					break;
-				}
 				if (paused) {
 					try {
 						pauseLock.wait();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
-						break;
-					}
-					if (!running) {
 						break;
 					}
 				}
@@ -38,7 +32,7 @@ public class AntWarriorAI extends BaseAI{
 				}
 			}
 			try {
-				sleep(35);
+				sleep(50);
 			} catch(InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -49,7 +43,7 @@ public class AntWarriorAI extends BaseAI{
 		antWarrior.setMovementAngle(antWarrior.getMovementAngle() + Math.PI/50 * antWarrior.getMovementDirection());
 		antWarrior.setPosX(antWarrior.getSpawnX() + (int)(AntWarrior.movementRadius * Math.cos(antWarrior.getMovementAngle())));
 		antWarrior.setPosY(antWarrior.getSpawnY() + (int)(AntWarrior.movementRadius * Math.sin(antWarrior.getMovementAngle())));
-		antWarrior.moveImage(antWarrior.getPosX(), antWarrior.getPosY());
+		antWarrior.moveImage();
 	}
 
 }

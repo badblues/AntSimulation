@@ -33,9 +33,9 @@
                         <Font name="FreeMono" size="18.0" />
                      </font>
                   </Text>
-                  <ImageView fitHeight="71.0" fitWidth="152.0" layoutX="324.0" layoutY="330.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="72.0" fitWidth="177.0" layoutX="312.0" layoutY="325.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../resources/GloryHole.png" />
+                        <Image url="@../../../resources/GloryHole.png" />
                      </image>
                      <effect>
                         <DropShadow height="12.1" radius="16.669999999999998" width="56.58" />
@@ -71,7 +71,7 @@
                         <Font name="Hack Regular" size="18.0" />
                      </font>
                   </CheckBox>
-                  <Button layoutX="59.0" layoutY="248.0" mnemonicParsing="false" onAction="#showAliveAnts" text="Show alive ants">
+                  <Button layoutX="58.0" layoutY="250.0" mnemonicParsing="false" onAction="#showAliveAnts" prefHeight="30.0" prefWidth="109.0" text="Show alive ants">
                      <font>
                         <Font name="Noto Sans Vai Regular" size="18.0" />
                      </font>
@@ -135,6 +135,24 @@
                      <font>
                         <Font name="Noto Sans Vai Regular" size="14.0" />
                      </font></TextField>
+                  <ComboBox fx:id="antWarriorThreadPriorityBox" layoutX="15.0" layoutY="542.0" onAction="#changeAntWarriorThreadPriority" prefWidth="150.0" />
+                  <ComboBox fx:id="antWorkerThreadPriorityBox" layoutX="15.0" layoutY="602.0" onAction="#changeAntWorkerThreadPriority" prefWidth="150.0" />
+                  <ComboBox fx:id="mainThreadPriorityBox" layoutX="15.0" layoutY="662.0" onAction="#changeMainThreadPriority" prefWidth="150.0" />
+                  <Label layoutX="15.0" layoutY="512.0" text="Warriors thread priority">
+                     <font>
+                        <Font name="Noto Sans Vai Regular" size="18.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="15.0" layoutY="572.0" text="Workers thread priority">
+                     <font>
+                        <Font name="Noto Sans Vai Regular" size="18.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="15.0" layoutY="632.0" text="Main thread priority">
+                     <font>
+                        <Font name="Noto Sans Vai Regular" size="18.0" />
+                     </font>
+                  </Label>
                </children>
             </Pane>
             <MenuBar maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="1280.0" style="-fx-background-color: linear-gradient(to top, white, grey);;">
@@ -144,6 +162,7 @@
                       <MenuItem fx:id="startMenuItem" mnemonicParsing="false" onAction="#startSimulation" text="Start" />
                         <MenuItem fx:id="pauseMenuItem" mnemonicParsing="false" onAction="#pauseSimulation" text="Pause" />
                         <MenuItem mnemonicParsing="false" onAction="#endSimulation" text="Stop" />
+                        <MenuItem fx:id="consoleMenuItem" mnemonicParsing="false" onAction="#showConsoleArea" text="Console" />
                     </items>
                   </Menu>
                </menus>

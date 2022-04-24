@@ -8,10 +8,6 @@ import java.util.Vector;
 
 public class AntWorkerAI extends BaseAI{
 
-	private volatile boolean running = true;
-	private volatile boolean paused = false;
-	private final Object pauseLock = new Object();
-
 	int homeX = 400;
 	int homeY = 360;
 
@@ -22,19 +18,13 @@ public class AntWorkerAI extends BaseAI{
 
 	@Override
 	public void run() {
-		while (running) {
+		while (true) {
 			synchronized (pauseLock) {
-				if (!running) {
-					break;
-				}
 				if (paused) {
 					try {
 						pauseLock.wait();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
-						break;
-					}
-					if (!running) {
 						break;
 					}
 				}
@@ -47,7 +37,7 @@ public class AntWorkerAI extends BaseAI{
 				}
 			}
 			try {
-				sleep(35);
+				sleep(50);
 			} catch(InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -78,16 +68,16 @@ public class AntWorkerAI extends BaseAI{
 			x += dx;
 			y += dy;
 		}
-		antWorker.moveImage(x, y);
 		antWorker.setPosX(x);
 		antWorker.setPosY(y);
+		antWorker.moveImage();
 	}
 
 	public void pause() {
 		paused = true;
 	}
 
-	public void myresume() {
+	public void unpause() {
 		synchronized (pauseLock) {
 			paused = false;
 			pauseLock.notifyAll();

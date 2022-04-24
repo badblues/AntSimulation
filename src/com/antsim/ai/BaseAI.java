@@ -6,7 +6,6 @@ import java.util.Vector;
 
 public abstract class BaseAI extends Thread {
 
-	protected volatile boolean running = true;
 	protected volatile boolean paused = false;
 	protected final Object pauseLock = new Object();
 
@@ -16,14 +15,11 @@ public abstract class BaseAI extends Thread {
 		this.antsVector = antsVector;
 	}
 
-	@Override
-	public void run() {}
-
 	public void pause() {
 		paused = true;
 	}
 
-	public void myresume() {
+	public void unpause() {
 		synchronized (pauseLock) {
 			paused = false;
 			pauseLock.notifyAll();

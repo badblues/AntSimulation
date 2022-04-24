@@ -1,10 +1,9 @@
 package com.antsim;
 
-import com.antsim.ai.AntWarriorAI;
-import com.antsim.ai.AntWorkerAI;
 import com.antsim.ant.*;
 
 import javafx.application.*;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.*;
@@ -13,18 +12,14 @@ import java.util.*;
 
 //TODO ключ тримапы - класс АНТ
 //TODO поиск в дереве по value и удаление по Id
-//TODO стоп тредов по паузе
-//TODO отключение ии по кнопкам
-//TODO разобраться с синхронизацией потоков
-//TODO выпадающие списки в панели управления для выставления приоритетов потоков
-
+//TODO new window
 
 public class Habitat extends Application {
 
 	static final int MAX_SPAWN_DELAY = 30;
 	static final int MIN_SPAWN_DELAY = 1;
 	static final int MIN_LIFE_TIME = 1;
-	static final int MAX_LIFE_TIME = 30;
+	static final int MAX_LIFE_TIME = 20;
 	private static Habitat instance;
 	private final Vector<Ant> antsVector = new Vector<>();
 	private final HashSet<Integer> antsIds = new HashSet<>();
@@ -48,13 +43,14 @@ public class Habitat extends Application {
 	}
 
 	public static void main(String[] args) {
+		ConfigController.load();
 		launch(args);
 	}
 
 	@Override
-	public void start(Stage stage) throws Exception {
+	public void start(Stage stage) {
 		try {
-			Parent root = javafx.fxml.FXMLLoader.load(getClass().getResource("AntSim.fxml"));
+			Parent root = FXMLLoader.load(getClass().getResource("view/AntSim.fxml"));
 			Scene scene = new Scene(root);
 			stage.setScene(scene);
 			stage.setResizable(false);

@@ -25,7 +25,7 @@ public abstract class Ant implements IBehavior {
 
 	public abstract void destroyAnt();
 
-	public abstract void moveImage(int newX, int newY);
+	public abstract void moveImage();
 
 	public int getId() {
 		return id;

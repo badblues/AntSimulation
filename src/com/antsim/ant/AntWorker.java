@@ -28,9 +28,9 @@ public class AntWorker extends Ant implements IBehavior {
         this.id = id;
     }
 
-    public void moveImage(int newX, int newY) {
-        antWorkerImageView.setX(newX);
-        antWorkerImageView.setY(newY);
+    public void moveImage() {
+        antWorkerImageView.setX(posX);
+        antWorkerImageView.setY(posY);
     }
 
     public void destroyAnt() {

@@ -1,0 +1,6 @@
+100 = AntWarrior spawn chance(1, 100)
+100 = AntWorker spawn chance(1, 100)
+1 = AntWarrior spawn delay(1, 30)
+1 = AntWorker spawn delay(1, 30)
+10 = AntWarrior lifetime(1, 20)
+10 = AntWorker lifetime(1, 20)
