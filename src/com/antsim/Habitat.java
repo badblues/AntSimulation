@@ -55,6 +55,7 @@ public class Habitat extends Application {
 			stage.setScene(scene);
 			stage.setResizable(false);
 			stage.setOnCloseRequest(windowEvent ->  {
+				ConfigController.save();
 				Platform.exit();
 				System.exit(0);
 			});

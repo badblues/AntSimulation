@@ -10,23 +10,27 @@ public class ConfigController {
 	private static Habitat model = Habitat.getInstance();
 
 	static public void load() {
-		boolean error = false;
 		try {
 			Scanner scanner = new Scanner(new File("src/com/antsim/config/conf.txt"));
-			if (!(readSpawnChance(scanner) && readSpawnDelay(scanner) && readLifetime(scanner)))
+			if (!(readSpawnChance(scanner) && readSpawnDelay(scanner) && readLifetime(scanner))) {
 				setDefaultConf();
-			else
-				System.out.println("zaebis");
+				System.out.println("Configuration file was damaged");
+			}
 		} catch(FileNotFoundException e) {
-			e.printStackTrace();
-			error = true;
-		}
-		if (error)
 			setDefaultConf();
+			System.out.println("Configuration file wasn't founded\n");
+		}
 	}
 
 	static public void save() {
-
+		try {
+			new File("src/com/antsim/config/conf.txt").createNewFile();
+			FileWriter writer = new FileWriter("src/com/antsim/config/conf.txt", false);
+			writeValues(writer);
+			writer.close();
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private static boolean readSpawnChance(Scanner scanner) {
@@ -34,16 +38,16 @@ public class ConfigController {
 		int val;
 		if (scanner.hasNextInt()) {
 			val = scanner.nextInt();
-			if (val >= 10 && val <= 100 && val % 10 == 0) {
+			if (val >= 0 && val <= 100 && val % 10 == 0) {
 				model.setAntWarriorSpawnChance(val);
-				scanner.skip("= AntWarrior spawn chance(1, 100)");
+				scanner.nextLine();
 			} else noError = false;
 		} else noError = false;
 		if (scanner.hasNextInt() && noError) {
 			val = scanner.nextInt();
-			if (val >= 10 && val <= 100 && val % 10 == 0) {
+			if (val >= 0 && val <= 100 && val % 10 == 0) {
 				model.setAntWorkerSpawnChance(val);
-				scanner.skip("=AntWorker spawn chance(1, 100)");
+				scanner.nextLine();
 			} else noError = false;
 		} else noError = false;
 		return noError;
@@ -56,14 +60,14 @@ public class ConfigController {
 			val = scanner.nextInt();
 			if (val >= Habitat.MIN_SPAWN_DELAY && val <= Habitat.MAX_SPAWN_DELAY) {
 				model.setAntWarriorSpawnDelay(val);
-				scanner.skip("= AntWarrior spawn delay(1, 30)\n");
+				scanner.nextLine();
 			} else noError = false;
 		} else noError = false;
 		if (scanner.hasNextInt() && noError) {
 			val = scanner.nextInt();
 			if (val >= Habitat.MIN_SPAWN_DELAY && val <= Habitat.MAX_SPAWN_DELAY) {
 				model.setAntWorkerSpawnDelay(val);
-				scanner.skip("= AntWorker spawn delay(1, 30)\n");
+				scanner.nextLine();
 			} else noError = false;
 		} else noError = false;
 		return noError;
@@ -76,17 +80,25 @@ public class ConfigController {
 			val = scanner.nextInt();
 			if (val >= Habitat.MIN_LIFE_TIME && val <= Habitat.MAX_LIFE_TIME) {
 				model.setAntWarriorLifeTime(val);
-				scanner.skip("= AntWarrior lifetime(1, 20)\n");
+				scanner.nextLine();
 			} else noError = false;
 		} else noError = false;
 		if (scanner.hasNextInt() && noError) {
 			val = scanner.nextInt();
 			if (val >= Habitat.MIN_LIFE_TIME && val <= Habitat.MAX_LIFE_TIME) {
 				model.setAntWorkerLifeTime(val);
-				scanner.skip("= AntWorker lifetime(1, 20)\n");
 			} else noError = false;
 		} else noError = false;
 		return noError;
+	}
+
+	private static void writeValues(FileWriter writer) throws IOException {
+		writer.write(model.getAntWarriorSpawnChance() + " = AntWarrior spawn chance(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100)\n");
+		writer.write(model.getAntWorkerSpawnChance() + " = AntWorker spawn chance(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100)\n");
+		writer.write(model.getAntWarriorSpawnDelay() + " = AntWarrior spawn delay(1, 30)\n");
+		writer.write(model.getAntWorkerSpawnDelay() + " = AntWorker spawn delay(1, 30)\n");
+		writer.write(model.getAntWarriorLifeTime() + " = AntWarrior lifetime(1, 20)\n");
+		writer.write(model.getAntWorkerLifeTime() + " = AntWorker lifetime(1, 20)");
 	}
 
 	private static void setDefaultConf() {
