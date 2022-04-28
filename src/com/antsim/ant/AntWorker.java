@@ -12,6 +12,11 @@ public class AntWorker extends Ant implements IBehavior {
     Group root;
     Destination destination = Destination.HOME;
 
+    public AntWorker(int posX, int posY, int spawnX, int spawnY, int destination) {
+        super(posX, posY, spawnX, spawnY);
+        this.destination = Destination.values()[destination];
+    }
+
     public AntWorker() {
         super();
     }

@@ -15,19 +15,24 @@ public class AntWarrior extends Ant implements IBehavior {
 
 	public AntWarrior() {
 		super();
+		if (new Random().nextBoolean())
+			movementDirection = 1;
+		else
+			movementDirection = -1;
+	}
+
+	public AntWarrior(int posX, int posY, int spawnX, int spawnY, int movementDirection, double movementAngle) {
+		super(posX, posY, spawnX, spawnY);
+		this.movementDirection = movementDirection;
+		this.movementAngle = movementAngle;
 	}
 
 	@Override
 	public void spawn(Group root, int time, int lifeT, int id) {
 		antWarriorImageView.setX(posX);
 		antWarriorImageView.setY(posY);
-		if (new Random().nextBoolean())
-			movementDirection = 1;
-		else
-			movementDirection = -1;
 		root.getChildren().add(antWarriorImageView);
 		this.root = root;
-
 		spawnTime = time; 
 		lifeTime = lifeT;
 		this.id = id;

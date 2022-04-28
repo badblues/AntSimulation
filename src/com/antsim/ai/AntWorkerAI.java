@@ -44,6 +44,8 @@ public class AntWorkerAI extends BaseAI{
 		}
 	}
 
+	//TODO refactor repeating code
+
 	private void move(AntWorker antWorker) {
 		int x = antWorker.getPosX();
 		int y = antWorker.getPosY();

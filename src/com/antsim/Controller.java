@@ -16,6 +16,8 @@ import java.util.*;
 
 public class Controller implements Initializable {
 
+	//TODO private void count() //counts all ants
+
 	Habitat model = Habitat.getInstance();
 	AlertsView alertsView = AlertsView.getInstance();
 	//Console console = Console.getInstance();
@@ -325,6 +327,16 @@ public class Controller implements Initializable {
 		//console.hideConsole();
 	}
 
+	public void saveAnts() {
+		SaverController.save();
+	}
+
+	public void loadAnts() {
+		pauseSimulation();
+		endSimulation();
+		SaverController.load(antsArea);
+	}
+
 	private int getNewID() {
 		Random rand = new Random();
 		int id = Math.abs(rand.nextInt(1000));
@@ -383,11 +395,6 @@ public class Controller implements Initializable {
 		}
 	}
 
-	private void updateImages() {
-		for (Ant ant : model.getAntsVector()) {
-			ant.moveImage();
-		}
-	}
 
 	private void update(int time) {
 		Random rand = new Random();

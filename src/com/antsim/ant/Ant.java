@@ -14,11 +14,16 @@ public abstract class Ant implements IBehavior {
 	int lifeTime;
 	int id;
 
+	Ant(int posX, int posY, int spawnX, int spawnY) {
+		this.posX = posX;
+		this.posY = posY;
+		this.spawnX = spawnX;
+		this.spawnY = spawnY;
+	}
 	Ant() {
 		Random rand = new Random();
 		posX = spawnX = rand.nextInt(760);
 		posY = spawnY = rand.nextInt(660) + 20;
-		id = rand.nextInt(1000);
 	}
 
 	public abstract void spawn(Group root, int time, int lifeT, int id);

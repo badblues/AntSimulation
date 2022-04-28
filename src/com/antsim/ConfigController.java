@@ -8,10 +8,11 @@ import java.util.Scanner;
 public class ConfigController {
 
 	private static Habitat model = Habitat.getInstance();
+	private static String fpath = "src/com/antsim/config/conf.txt";
 
 	static public void load() {
 		try {
-			Scanner scanner = new Scanner(new File("src/com/antsim/config/conf.txt"));
+			Scanner scanner = new Scanner(new File(fpath));
 			if (!(readSpawnChance(scanner) && readSpawnDelay(scanner) && readLifetime(scanner))) {
 				setDefaultConf();
 				System.out.println("Configuration file was damaged");
@@ -24,8 +25,8 @@ public class ConfigController {
 
 	static public void save() {
 		try {
-			new File("src/com/antsim/config/conf.txt").createNewFile();
-			FileWriter writer = new FileWriter("src/com/antsim/config/conf.txt", false);
+			new File(fpath).createNewFile();
+			FileWriter writer = new FileWriter(fpath, false);
 			writeValues(writer);
 			writer.close();
 		} catch(IOException e) {
