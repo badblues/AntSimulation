@@ -5,27 +5,30 @@ import com.antsim.ai.AntWorkerAI;
 import com.antsim.ant.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
 public class Controller implements Initializable {
 
-	//TODO private void count() //counts all ants
-
 	Habitat model = Habitat.getInstance();
 	AlertsView alertsView = AlertsView.getInstance();
-	//Console console = Console.getInstance();
 	Timer timer;
 	final AntWarriorAI antWarriorAI = new AntWarriorAI(model.getAntsVector());
 	final AntWorkerAI antWorkerAI = new AntWorkerAI(model.getAntsVector());
 
 	private boolean canShowStatistics = false;
+	ConsoleController consoleController;
+	Console console;
 
 	@FXML
 	Group antsArea;
@@ -68,6 +71,9 @@ public class Controller implements Initializable {
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
+
+		console = new Console();
+		consoleController = console.getConsoleController();
 
 		launchAIThreads();
 
@@ -183,25 +189,20 @@ public class Controller implements Initializable {
 
 	public void keyEvent(KeyEvent keyEvent) {
 		switch(keyEvent.getCode()) {
-				case B -> startSimulation();
-				case E -> pauseSimulation();
-				case T -> {
-					updateTimerText();
-					timerText.setVisible(!timerText.isVisible());
-					if (timerText.isVisible()) {
-						showTimeButton.setSelected(true);
-					} else {
-						hideTimeButton.setSelected(true);
-					}
-				}
-				case C -> {
-					showConsoleArea();
-				}
-				case ESCAPE -> {
-					hideConsoleArea();
+			case B -> startSimulation();
+			case E -> pauseSimulation();
+			case T -> {
+				updateTimerText();
+				timerText.setVisible(!timerText.isVisible());
+				if (timerText.isVisible()) {
+					showTimeButton.setSelected(true);
+				} else {
+					hideTimeButton.setSelected(true);
 				}
 			}
+			case C -> showConsoleArea();
 		}
+	}
 
 	public void showTimeText() {
 		timerText.setVisible(true);
@@ -318,13 +319,12 @@ public class Controller implements Initializable {
 		antWorkerLifeTimeTextF.setText(Integer.toString(model.getAntWorkerLifeTime()));
 	}
 
-	//TODO govno
 	public void showConsoleArea() {
-		//console.showConsole();
+		consoleController.showConsole();
 	}
 
 	public void hideConsoleArea() {
-		//console.hideConsole();
+		consoleController.hideConsole();
 	}
 
 	public void saveAnts() {
