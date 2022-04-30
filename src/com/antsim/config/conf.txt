@@ -1,6 +1,9 @@
-100 = AntWarrior spawn chance(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100)
-100 = AntWorker spawn chance(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100)
-2 = AntWarrior spawn delay(1, 30)
-1 = AntWorker spawn delay(1, 30)
+20 = AntWarrior spawn chance(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100)
+10 = AntWorker spawn chance(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100)
+15 = AntWarrior spawn delay(1, 30)
+11 = AntWorker spawn delay(1, 30)
 10 = AntWarrior lifetime(1, 20)
-10 = AntWorker lifetime(1, 20)
+8 = AntWorker lifetime(1, 20)
+2 = Warriors thread priority
+9 = Workers thread priority
+3 = Main thread priority

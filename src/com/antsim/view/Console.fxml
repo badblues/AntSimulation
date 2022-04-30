@@ -5,6 +5,6 @@
 
 <AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#keyEvent" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.antsim.ConsoleController">
    <children>
-      <TextArea fx:id="consoleArea" prefHeight="400.0" prefWidth="600.0" />
+      <TextArea fx:id="consoleArea" onKeyPressed="#keyEvent" prefHeight="400.0" prefWidth="600.0" />
    </children>
 </AnchorPane>

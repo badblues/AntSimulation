@@ -77,19 +77,14 @@ public class Controller implements Initializable {
 
 		launchAIThreads();
 
-		setDefaultValuesToView();
-
 		Integer[] chances = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
 		antWarriorChanceBox.getItems().addAll(chances);
 		antWorkerChanceBox.getItems().addAll(chances);
 
 		Integer[] priorities = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 		antWarriorThreadPriorityBox.getItems().addAll(priorities);
-		antWarriorThreadPriorityBox.setValue(5);
 		antWorkerThreadPriorityBox.getItems().addAll(priorities);
-		antWorkerThreadPriorityBox.setValue(5);
 		mainThreadPriorityBox.getItems().addAll(priorities);
-		mainThreadPriorityBox.setValue(5);
 
 		antWarriorSpawnDelaySlider.valueProperty().addListener((observableValue, number, newValue) -> {
 			model.setAntWarriorSpawnDelay(newValue.intValue());
@@ -139,6 +134,9 @@ public class Controller implements Initializable {
 			if(s.length() > 2)
 				antWorkerLifeTimeTextF.setText(s.substring(0, 2));
 		});
+
+		setDefaultValuesToView();
+
 	}
 
 	public void startSimulation() {
@@ -290,15 +288,18 @@ public class Controller implements Initializable {
 	}
 
 	public void changeAntWarriorThreadPriority() {
-		antWarriorAI.setPriority(antWarriorThreadPriorityBox.getValue());
+		model.setAntWarriorThreadPriority(antWarriorThreadPriorityBox.getValue());
+		antWarriorAI.setPriority(model.getAntWarriorThreadPriority());
 	}
 
 	public void changeAntWorkerThreadPriority() {
-		antWorkerAI.setPriority(antWorkerThreadPriorityBox.getValue());
+		model.setAntWorkerThreadPriority(antWorkerThreadPriorityBox.getValue());
+		antWorkerAI.setPriority(model.getAntWorkerThreadPriority());
 	}
 
 	public void changeMainThreadPriority() {
-		Thread.currentThread().setPriority(mainThreadPriorityBox.getValue());
+		model.setMainThreadPriority(mainThreadPriorityBox.getValue());
+		Thread.currentThread().setPriority(model.getMainThreadPriority());
 	}
 
 	public void changeMovement() {
@@ -317,15 +318,18 @@ public class Controller implements Initializable {
 		antWorkerSpawnDelayTextF.setText(Integer.toString(model.getAntWorkerSpawnDelay()));
 		antWarriorLifeTimeTextF.setText(Integer.toString(model.getAntWarriorLifeTime()));
 		antWorkerLifeTimeTextF.setText(Integer.toString(model.getAntWorkerLifeTime()));
+		antWarriorThreadPriorityBox.setValue(model.getAntWarriorThreadPriority());
+		antWarriorAI.setPriority(model.getAntWarriorThreadPriority());
+		antWorkerThreadPriorityBox.setValue(model.getAntWorkerThreadPriority());
+		antWorkerAI.setPriority(model.getAntWorkerThreadPriority());
+		mainThreadPriorityBox.setValue(model.getMainThreadPriority());
+		Thread.currentThread().setPriority(model.getMainThreadPriority());
 	}
 
 	public void showConsoleArea() {
-		consoleController.showConsole();
+		consoleController.showConsole(this);
 	}
 
-	public void hideConsoleArea() {
-		consoleController.hideConsole();
-	}
 
 	public void saveAnts() {
 		SaverController.save();

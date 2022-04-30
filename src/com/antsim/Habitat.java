@@ -12,7 +12,6 @@ import java.util.*;
 
 //TODO ключ тримапы - класс АНТ
 //TODO поиск в дереве по value и удаление по Id
-//TODO new window
 
 public class Habitat extends Application {
 
@@ -35,6 +34,9 @@ public class Habitat extends Application {
 	private int timeToAntWorkerSpawn = antWorkerSpawnDelay;
 	private int antWarriorLifeTime = 10;
 	private int antWorkerLifeTime = 10;
+	private int antWarriorThreadPriority = 5;
+	private int antWorkerThreadPriority = 5;
+	private int mainThreadPriority = 5;
 
 	static synchronized Habitat getInstance() {
 		if(instance == null)
@@ -160,5 +162,29 @@ public class Habitat extends Application {
 	void setAntWorkerLifeTime(int time) {
         antWorkerLifeTime = time;
     }
+
+	public void setAntWarriorThreadPriority(int antWarriorThreadPriority) {
+		this.antWarriorThreadPriority = antWarriorThreadPriority;
+	}
+
+	public int getAntWarriorThreadPriority() {
+		return antWarriorThreadPriority;
+	}
+
+	public int getAntWorkerThreadPriority() {
+		return antWorkerThreadPriority;
+	}
+
+	public void setAntWorkerThreadPriority(int antWorkerThreadPriority) {
+		this.antWorkerThreadPriority = antWorkerThreadPriority;
+	}
+
+	public int getMainThreadPriority() {
+		return mainThreadPriority;
+	}
+
+	public void setMainThreadPriority(int mainThreadPriority) {
+		this.mainThreadPriority = mainThreadPriority;
+	}
 
 }

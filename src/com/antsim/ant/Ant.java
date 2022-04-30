@@ -3,9 +3,14 @@ package com.antsim.ant;
 import com.antsim.IBehavior;
 import javafx.scene.*;
 
+import java.io.Serializable;
 import java.util.*;
 
-public abstract class Ant implements IBehavior {
+
+//todo serializable
+
+
+public abstract class Ant implements IBehavior, Serializable {
 	int posX;
 	int posY;
 	int spawnX;

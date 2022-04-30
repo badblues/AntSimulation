@@ -3,8 +3,6 @@ package com.antsim;
 import java.io.*;
 import java.util.Scanner;
 
-//TODO recreate using BufferedReader
-
 public class ConfigController {
 
 	private static Habitat model = Habitat.getInstance();
@@ -13,7 +11,8 @@ public class ConfigController {
 	static public void load() {
 		try {
 			Scanner scanner = new Scanner(new File(fpath));
-			if (!(readSpawnChance(scanner) && readSpawnDelay(scanner) && readLifetime(scanner))) {
+			if (!(readSpawnChance(scanner) && readSpawnDelay(scanner)
+					&& readLifetime(scanner) && readThreadPriorities(scanner))) {
 				setDefaultConf();
 				System.out.println("Configuration file was damaged");
 			}
@@ -88,6 +87,33 @@ public class ConfigController {
 			val = scanner.nextInt();
 			if (val >= Habitat.MIN_LIFE_TIME && val <= Habitat.MAX_LIFE_TIME) {
 				model.setAntWorkerLifeTime(val);
+				scanner.nextLine();
+			} else noError = false;
+		} else noError = false;
+		return noError;
+	}
+
+	private static boolean readThreadPriorities(Scanner scanner) {
+		boolean noError = true;
+		int val;
+		if (scanner.hasNextInt()) {
+			val = scanner.nextInt();
+			if (val >= Thread.MIN_PRIORITY && val <= Thread.MAX_PRIORITY) {
+				model.setAntWarriorThreadPriority(val);
+				scanner.nextLine();
+			} else noError = false;
+		} else noError = false;
+		if (scanner.hasNextInt() && noError) {
+			val = scanner.nextInt();
+			if (val >= Thread.MIN_PRIORITY && val <= Thread.MAX_PRIORITY) {
+				model.setAntWorkerThreadPriority(val);
+				scanner.nextLine();
+			} else noError = false;
+		} else noError = false;
+		if (scanner.hasNextInt() && noError) {
+			val = scanner.nextInt();
+			if (val >= Thread.MIN_PRIORITY && val <= Thread.MAX_PRIORITY) {
+				model.setMainThreadPriority(val);
 			} else noError = false;
 		} else noError = false;
 		return noError;
@@ -99,7 +125,10 @@ public class ConfigController {
 		writer.write(model.getAntWarriorSpawnDelay() + " = AntWarrior spawn delay(1, 30)\n");
 		writer.write(model.getAntWorkerSpawnDelay() + " = AntWorker spawn delay(1, 30)\n");
 		writer.write(model.getAntWarriorLifeTime() + " = AntWarrior lifetime(1, 20)\n");
-		writer.write(model.getAntWorkerLifeTime() + " = AntWorker lifetime(1, 20)");
+		writer.write(model.getAntWorkerLifeTime() + " = AntWorker lifetime(1, 20)\n");
+		writer.write(model.getAntWarriorThreadPriority() + " = Warriors thread priority\n");
+		writer.write(model.getAntWorkerThreadPriority() + " = Workers thread priority\n");
+		writer.write(model.getMainThreadPriority() + " = Main thread priority");
 	}
 
 	private static void setDefaultConf() {
@@ -109,5 +138,8 @@ public class ConfigController {
 		model.setAntWorkerSpawnDelay(1);
 		model.setAntWarriorLifeTime(10);
 		model.setAntWorkerLifeTime(10);
+		model.setAntWarriorThreadPriority(5);
+		model.setAntWorkerThreadPriority(5);
+		model.setMainThreadPriority(5);
 	}
 }

@@ -10,14 +10,13 @@ import java.io.IOException;
 public class Console {
 
     ConsoleController consoleController;
-    private static Stage stage;
 
     public Console() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("view/Console.fxml"));
             Parent root = loader.load();
             consoleController = loader.getController();
-            stage = new Stage();
+            Stage stage = new Stage();
             consoleController.initialize(stage);
             stage.setScene(new Scene(root));
         } catch(IOException ex) {
