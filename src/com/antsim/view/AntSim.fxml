@@ -85,8 +85,8 @@
             </Pane>
             <Pane layoutX="1040.0" prefHeight="720.0" prefWidth="240.0">
                <children>
-                  <ComboBox fx:id="antWarriorChanceBox" layoutX="20.0" layoutY="68.0" onAction="#changeAntWarriorSpawnChance" prefWidth="150.0" />
-                  <ComboBox fx:id="antWorkerChanceBox" layoutX="20.0" layoutY="131.0" onAction="#changeAntWorkerSpawnChance" prefWidth="150.0" />
+                  <ComboBox fx:id="warriorChanceBox" layoutX="20.0" layoutY="68.0" onAction="#changeAntWarriorSpawnChance" prefWidth="150.0" />
+                  <ComboBox fx:id="workerChanceBox" layoutX="20.0" layoutY="131.0" onAction="#changeAntWorkerSpawnChance" prefWidth="150.0" />
                   <Label layoutX="20.0" layoutY="36.0" text="Ant warrior spawn chance">
                      <font>
                         <Font name="Noto Sans Vai Regular" size="14.0" />
@@ -117,26 +117,26 @@
                         <Font name="Noto Sans Vai Regular" size="14.0" />
                      </font>
                   </Label>
-                  <Slider fx:id="antWarriorSpawnDelaySlider" blockIncrement="1.0" layoutX="20.0" layoutY="217.0" majorTickUnit="5.0" max="30.0" min="1.0" minorTickCount="0" showTickMarks="true" value="1.0">
+                  <Slider fx:id="warriorSpawnDelaySlider" blockIncrement="1.0" layoutX="20.0" layoutY="217.0" majorTickUnit="5.0" max="30.0" min="1.0" minorTickCount="0" showTickMarks="true" value="1.0">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor></Slider>
-                  <Slider fx:id="antWorkerSpawnDelaySlider" layoutX="20.0" layoutY="310.0" majorTickUnit="5.0" max="30.0" min="1.0" minorTickCount="0" showTickMarks="true" value="1.0">
+                  <Slider fx:id="workerSpawnDelaySlider" layoutX="20.0" layoutY="310.0" majorTickUnit="5.0" max="30.0" min="1.0" minorTickCount="0" showTickMarks="true" value="1.0">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor></Slider>
-                  <TextField fx:id="antWarriorSpawnDelayTextF" layoutX="181.0" layoutY="210.0" onAction="#changeAntWarriorSpawnDelayTextF" prefHeight="26.0" prefWidth="36.0" text="1" />
-                  <TextField fx:id="antWorkerSpawnDelayTextF" layoutX="181.0" layoutY="305.0" onAction="#changeAntWorkerSpawnDelayTextF" prefHeight="26.0" prefWidth="36.0" text="1" />
-                  <TextField fx:id="antWarriorLifeTimeTextF" layoutX="20.0" layoutY="400.0" onAction="#changeAntWarriorLifeTime" prefHeight="26.0" prefWidth="36.0" text="10">
+                  <TextField fx:id="warriorSpawnDelayTextF" layoutX="181.0" layoutY="210.0" onAction="#changeAntWarriorSpawnDelayTextF" prefHeight="26.0" prefWidth="36.0" text="1" />
+                  <TextField fx:id="workerSpawnDelayTextF" layoutX="181.0" layoutY="305.0" onAction="#changeAntWorkerSpawnDelayTextF" prefHeight="26.0" prefWidth="36.0" text="1" />
+                  <TextField fx:id="warriorLifeTimeTextF" layoutX="20.0" layoutY="400.0" onAction="#changeAntWarriorLifeTime" prefHeight="26.0" prefWidth="36.0" text="10">
                      <font>
                         <Font name="Noto Sans Vai Regular" size="14.0" />
                      </font></TextField>
-                  <TextField fx:id="antWorkerLifeTimeTextF" layoutX="20.0" layoutY="470.0" onAction="#changeAntWorkerLifeTime" prefHeight="26.0" prefWidth="36.0" text="10">
+                  <TextField fx:id="workerLifeTimeTextF" layoutX="20.0" layoutY="470.0" onAction="#changeAntWorkerLifeTime" prefHeight="26.0" prefWidth="36.0" text="10">
                      <font>
                         <Font name="Noto Sans Vai Regular" size="14.0" />
                      </font></TextField>
-                  <ComboBox fx:id="antWarriorThreadPriorityBox" layoutX="15.0" layoutY="542.0" onAction="#changeAntWarriorThreadPriority" prefWidth="150.0" />
-                  <ComboBox fx:id="antWorkerThreadPriorityBox" layoutX="15.0" layoutY="602.0" onAction="#changeAntWorkerThreadPriority" prefWidth="150.0" />
+                  <ComboBox fx:id="warriorThreadPriorityBox" layoutX="15.0" layoutY="542.0" onAction="#changeAntWarriorThreadPriority" prefWidth="150.0" />
+                  <ComboBox fx:id="workerThreadPriorityBox" layoutX="15.0" layoutY="602.0" onAction="#changeAntWorkerThreadPriority" prefWidth="150.0" />
                   <ComboBox fx:id="mainThreadPriorityBox" layoutX="15.0" layoutY="662.0" onAction="#changeMainThreadPriority" prefWidth="150.0" />
                   <Label layoutX="15.0" layoutY="512.0" text="Warriors thread priority">
                      <font>

@@ -3,145 +3,74 @@ package com.antsim.controllers;
 import com.antsim.model.Habitat;
 
 import java.io.*;
-import java.util.Scanner;
+import java.util.Properties;
 
 public class ConfigController {
 
 	private static Habitat model = Habitat.getInstance();
-	private static String fpath = "src/resources/data/conf.txt";
+	private static String fpath = "src/resources/data/config.properties";
 
 	static public void load() {
 		try {
-			Scanner scanner = new Scanner(new File(fpath));
-			if (!(readSpawnChance(scanner) && readSpawnDelay(scanner)
-					&& readLifetime(scanner) && readThreadPriorities(scanner))) {
-				setDefaultConf();
-				System.out.println("Configuration file was damaged");
-			}
+			Properties props = new Properties();
+			FileReader reader = new FileReader(fpath);
+			props.load(reader);
+			loadValues(props);
+			reader.close();
 		} catch(FileNotFoundException e) {
-			setDefaultConf();
-			System.out.println("Configuration file wasn't founded\n");
+			e.printStackTrace();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
 	static public void save() {
 		try {
-			new File(fpath).createNewFile();
-			FileWriter writer = new FileWriter(fpath, false);
-			writeValues(writer);
-			writer.close();
-		} catch(IOException e) {
-			e.printStackTrace();
+			Properties props = new Properties();
+			FileWriter writer = new FileWriter(fpath);
+			props.setProperty("warrior_spawn_chance", Integer.toString(model.getWarriorSpawnChance()));
+			props.setProperty("worker_spawn_chance", Integer.toString(model.getWorkerSpawnChance()));
+			props.setProperty("warrior_spawn_delay", Integer.toString(model.getWarriorSpawnDelay()));
+			props.setProperty("worker_spawn_delay", Integer.toString(model.getWorkerSpawnDelay()));
+			props.setProperty("warrior_lifetime", Integer.toString(model.getWarriorLifeTime()));
+			props.setProperty("worker_lifetime", Integer.toString(model.getWorkerLifeTime()));
+			props.setProperty("warriors_TP", Integer.toString(model.getWarriorThreadPriority()));
+			props.setProperty("workers_TP", Integer.toString(model.getWorkerThreadPriority()));
+			props.setProperty("main_TP", Integer.toString(model.getMainThreadPriority()));
+			props.store(writer, "Configuration");
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
-	private static boolean readSpawnChance(Scanner scanner) {
-		boolean noError = true;
+	private static void loadValues(Properties props) {
 		int val;
-		if (scanner.hasNextInt()) {
-			val = scanner.nextInt();
-			if (val >= 0 && val <= 100 && val % 10 == 0) {
-				model.setAntWarriorSpawnChance(val);
-				scanner.nextLine();
-			} else noError = false;
-		} else noError = false;
-		if (scanner.hasNextInt() && noError) {
-			val = scanner.nextInt();
-			if (val >= 0 && val <= 100 && val % 10 == 0) {
-				model.setAntWorkerSpawnChance(val);
-				scanner.nextLine();
-			} else noError = false;
-		} else noError = false;
-		return noError;
-	}
-
-	private static boolean readSpawnDelay(Scanner scanner) {
-		boolean noError = true;
-		int val;
-		if (scanner.hasNextInt()) {
-			val = scanner.nextInt();
-			if (val >= Habitat.MIN_SPAWN_DELAY && val <= Habitat.MAX_SPAWN_DELAY) {
-				model.setAntWarriorSpawnDelay(val);
-				scanner.nextLine();
-			} else noError = false;
-		} else noError = false;
-		if (scanner.hasNextInt() && noError) {
-			val = scanner.nextInt();
-			if (val >= Habitat.MIN_SPAWN_DELAY && val <= Habitat.MAX_SPAWN_DELAY) {
-				model.setAntWorkerSpawnDelay(val);
-				scanner.nextLine();
-			} else noError = false;
-		} else noError = false;
-		return noError;
-	}
-
-	private static boolean readLifetime(Scanner scanner) {
-		boolean noError = true;
-		int val;
-		if (scanner.hasNextInt()) {
-			val = scanner.nextInt();
-			if (val >= Habitat.MIN_LIFE_TIME && val <= Habitat.MAX_LIFE_TIME) {
-				model.setAntWarriorLifeTime(val);
-				scanner.nextLine();
-			} else noError = false;
-		} else noError = false;
-		if (scanner.hasNextInt() && noError) {
-			val = scanner.nextInt();
-			if (val >= Habitat.MIN_LIFE_TIME && val <= Habitat.MAX_LIFE_TIME) {
-				model.setAntWorkerLifeTime(val);
-				scanner.nextLine();
-			} else noError = false;
-		} else noError = false;
-		return noError;
-	}
-
-	private static boolean readThreadPriorities(Scanner scanner) {
-		boolean noError = true;
-		int val;
-		if (scanner.hasNextInt()) {
-			val = scanner.nextInt();
-			if (val >= Thread.MIN_PRIORITY && val <= Thread.MAX_PRIORITY) {
-				model.setAntWarriorThreadPriority(val);
-				scanner.nextLine();
-			} else noError = false;
-		} else noError = false;
-		if (scanner.hasNextInt() && noError) {
-			val = scanner.nextInt();
-			if (val >= Thread.MIN_PRIORITY && val <= Thread.MAX_PRIORITY) {
-				model.setAntWorkerThreadPriority(val);
-				scanner.nextLine();
-			} else noError = false;
-		} else noError = false;
-		if (scanner.hasNextInt() && noError) {
-			val = scanner.nextInt();
-			if (val >= Thread.MIN_PRIORITY && val <= Thread.MAX_PRIORITY) {
-				model.setMainThreadPriority(val);
-			} else noError = false;
-		} else noError = false;
-		return noError;
-	}
-
-	private static void writeValues(FileWriter writer) throws IOException {
-		writer.write(model.getAntWarriorSpawnChance() + " = AntWarrior spawn chance(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100)\n");
-		writer.write(model.getAntWorkerSpawnChance() + " = AntWorker spawn chance(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100)\n");
-		writer.write(model.getAntWarriorSpawnDelay() + " = AntWarrior spawn delay(1, 30)\n");
-		writer.write(model.getAntWorkerSpawnDelay() + " = AntWorker spawn delay(1, 30)\n");
-		writer.write(model.getAntWarriorLifeTime() + " = AntWarrior lifetime(1, 20)\n");
-		writer.write(model.getAntWorkerLifeTime() + " = AntWorker lifetime(1, 20)\n");
-		writer.write(model.getAntWarriorThreadPriority() + " = Warriors thread priority\n");
-		writer.write(model.getAntWorkerThreadPriority() + " = Workers thread priority\n");
-		writer.write(model.getMainThreadPriority() + " = Main thread priority");
-	}
-
-	private static void setDefaultConf() {
-		model.setAntWarriorSpawnChance(100);
-		model.setAntWorkerSpawnChance(100);
-		model.setAntWarriorSpawnDelay(1);
-		model.setAntWorkerSpawnDelay(1);
-		model.setAntWarriorLifeTime(10);
-		model.setAntWorkerLifeTime(10);
-		model.setAntWarriorThreadPriority(5);
-		model.setAntWorkerThreadPriority(5);
-		model.setMainThreadPriority(5);
+		val = Integer.parseInt(props.getProperty("warrior_spawn_chance", "100"));
+		if (val >= 0 && val <= 100 && val % 10 == 0)
+			model.setWarriorSpawnChance(val);
+		val = Integer.parseInt(props.getProperty("worker_spawn_chance", "100"));
+		if (val >= 0 && val <= 100 && val % 10 == 0)
+			model.setWorkerSpawnChance(val);
+		val = Integer.parseInt(props.getProperty("warrior_spawn_delay", "1"));
+		if (val >= Habitat.MIN_SPAWN_DELAY && val <= Habitat.MAX_SPAWN_DELAY)
+			model.setWarriorSpawnDelay(val);
+		val = Integer.parseInt(props.getProperty("worker_spawn_delay", "1"));
+		if (val >= Habitat.MIN_SPAWN_DELAY && val <= Habitat.MAX_SPAWN_DELAY)
+			model.setWorkerSpawnDelay(val);
+		val = Integer.parseInt(props.getProperty("warrior_lifetime", "10"));
+		if (val >= Habitat.MIN_LIFE_TIME && val <= Habitat.MAX_LIFE_TIME)
+			model.setWarriorLifeTime(val);
+		val = Integer.parseInt(props.getProperty("worker_lifetime", "10"));
+		if (val >= Habitat.MIN_LIFE_TIME && val <= Habitat.MAX_LIFE_TIME)
+			model.setWorkerLifeTime(val);
+		val = Integer.parseInt(props.getProperty("warriors_TP", "5"));
+		if (val >= Thread.MIN_PRIORITY && val <= Thread.MAX_PRIORITY)
+			model.setWarriorThreadPriority(val);
+		val = Integer.parseInt(props.getProperty("workers_TP", "5"));
+		if (val >= Thread.MIN_PRIORITY && val <= Thread.MAX_PRIORITY)
+			model.setWorkerThreadPriority(val);
+		val = Integer.parseInt(props.getProperty("main_TP", "5"));
+		if (val >= Thread.MIN_PRIORITY && val <= Thread.MAX_PRIORITY)
+			model.setMainThreadPriority(val);
 	}
 }

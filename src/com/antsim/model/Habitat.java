@@ -22,19 +22,19 @@ public class Habitat extends Application {
 	private final Vector<Ant> antsVector = new Vector<>();
 	private final HashSet<Integer> antsIds = new HashSet<>();
 	private final TreeMap<Integer, Integer> antsSpawnTime = new TreeMap<>();
-	private int antWarriorSpawnChance = 100; //percents
-	private int antWorkerSpawnChance = 100; //percents
-	private int antWarriorSpawnDelay = 1; // seconds
-	private int antWorkerSpawnDelay = 1; // seconds
-	private int antWarriorCount;
-	private int antWorkerCount;
+	private int warriorSpawnChance = 100; //percents
+	private int workerSpawnChance = 100; //percents
+	private int warriorSpawnDelay = 1; // seconds
+	private int workerSpawnDelay = 1; // seconds
+	private int warriorCount;
+	private int workerCount;
 	private int time;
-	private int timeToAntWarriorSpawn = antWarriorSpawnDelay;
-	private int timeToAntWorkerSpawn = antWorkerSpawnDelay;
-	private int antWarriorLifeTime = 10;
-	private int antWorkerLifeTime = 10;
-	private int antWarriorThreadPriority = 5;
-	private int antWorkerThreadPriority = 5;
+	private int timeToWarriorSpawn = warriorSpawnDelay;
+	private int timeToWorkerSpawn = workerSpawnDelay;
+	private int warriorLifeTime = 10;
+	private int workerLifeTime = 10;
+	private int warriorThreadPriority = 5;
+	private int workerThreadPriority = 5;
 	private int mainThreadPriority = 5;
 
 	public static synchronized Habitat getInstance() {
@@ -79,50 +79,50 @@ public class Habitat extends Application {
         return antsSpawnTime;
     }
 
-	public int getAntWarriorSpawnChance() {
-		return antWarriorSpawnChance;
+	public int getWarriorSpawnChance() {
+		return warriorSpawnChance;
 	}
 
-	public void setAntWarriorSpawnChance(int chance) {
-		antWarriorSpawnChance = chance;
+	public void setWarriorSpawnChance(int chance) {
+		warriorSpawnChance = chance;
 	}
 
-	public int getAntWorkerSpawnChance() {
-		return antWorkerSpawnChance;
+	public int getWorkerSpawnChance() {
+		return workerSpawnChance;
 	}
 
-	public void setAntWorkerSpawnChance(int chance) {
-		antWorkerSpawnChance = chance;
+	public void setWorkerSpawnChance(int chance) {
+		workerSpawnChance = chance;
 	}
 
-	public int getAntWarriorSpawnDelay() {
-		return antWarriorSpawnDelay;
+	public int getWarriorSpawnDelay() {
+		return warriorSpawnDelay;
 	}
 
-	public void setAntWarriorSpawnDelay(int delay) {
-		antWarriorSpawnDelay = delay;
+	public void setWarriorSpawnDelay(int delay) {
+		warriorSpawnDelay = delay;
 	}
 
-	public int getAntWorkerSpawnDelay() {return antWorkerSpawnDelay;}
+	public int getWorkerSpawnDelay() {return workerSpawnDelay;}
 
-	public void setAntWorkerSpawnDelay(int delay) {
-		antWorkerSpawnDelay = delay;
+	public void setWorkerSpawnDelay(int delay) {
+		workerSpawnDelay = delay;
 	}
 
-	public int getAntWarriorCount() {
-		return antWarriorCount;
+	public int getWarriorCount() {
+		return warriorCount;
 	}
 
-	public void setAntWarriorCount(int count) {
-		antWarriorCount = count;
+	public void setWarriorCount(int count) {
+		warriorCount = count;
 	}
 
-	public int getAntWorkerCount() {
-		return antWorkerCount;
+	public int getWorkerCount() {
+		return workerCount;
 	}
 
-	public void setAntWorkerCount(int count) {
-		antWorkerCount = count;
+	public void setWorkerCount(int count) {
+		workerCount = count;
 	}
 
 	public int getTime() {
@@ -133,50 +133,51 @@ public class Habitat extends Application {
 		this.time = time;
 	}
 
-	public int getTimeToAntWarriorSpawn() {
-		return timeToAntWarriorSpawn;
+	public int getTimeToWarriorSpawn() {
+		return timeToWarriorSpawn;
 	}
 
-	public void setTimeToAntWarriorSpawn(int time) {timeToAntWarriorSpawn = time;}
+	public void setTimeToWarriorSpawn(int time) {
+		timeToWarriorSpawn = time;}
 
-	public int getTimeToAntWorkerSpawn() {
-		return timeToAntWorkerSpawn;
+	public int getTimeToWorkerSpawn() {
+		return timeToWorkerSpawn;
 	}
 
-	public void setTimeToAntWorkerSpawn(int time) {
-        timeToAntWorkerSpawn = time;
+	public void setTimeToWorkerSpawn(int time) {
+        timeToWorkerSpawn = time;
     }
 
-	public int getAntWarriorLifeTime() {
-        return antWarriorLifeTime;
+	public int getWarriorLifeTime() {
+        return warriorLifeTime;
     }
 
-	public void setAntWarriorLifeTime(int time) {
-        antWarriorLifeTime = time;
+	public void setWarriorLifeTime(int time) {
+        warriorLifeTime = time;
     }
 
-	public int getAntWorkerLifeTime() {
-        return antWorkerLifeTime;
+	public int getWorkerLifeTime() {
+        return workerLifeTime;
     }
 
-	public void setAntWorkerLifeTime(int time) {
-        antWorkerLifeTime = time;
+	public void setWorkerLifeTime(int time) {
+        workerLifeTime = time;
     }
 
-	public void setAntWarriorThreadPriority(int antWarriorThreadPriority) {
-		this.antWarriorThreadPriority = antWarriorThreadPriority;
+	public void setWarriorThreadPriority(int warriorThreadPriority) {
+		this.warriorThreadPriority = warriorThreadPriority;
 	}
 
-	public int getAntWarriorThreadPriority() {
-		return antWarriorThreadPriority;
+	public int getWarriorThreadPriority() {
+		return warriorThreadPriority;
 	}
 
-	public int getAntWorkerThreadPriority() {
-		return antWorkerThreadPriority;
+	public int getWorkerThreadPriority() {
+		return workerThreadPriority;
 	}
 
-	public void setAntWorkerThreadPriority(int antWorkerThreadPriority) {
-		this.antWorkerThreadPriority = antWorkerThreadPriority;
+	public void setWorkerThreadPriority(int workerThreadPriority) {
+		this.workerThreadPriority = workerThreadPriority;
 	}
 
 	public int getMainThreadPriority() {

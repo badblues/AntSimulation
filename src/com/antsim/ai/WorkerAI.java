@@ -1,17 +1,17 @@
 package com.antsim.ai;
 
 import com.antsim.ant.Ant;
-import com.antsim.ant.AntWorker;
+import com.antsim.ant.Worker;
 
 import java.util.Vector;
 
 
-public class AntWorkerAI extends BaseAI{
+public class WorkerAI extends BaseAI{
 
 	int homeX = 400;
 	int homeY = 360;
 
-	public AntWorkerAI(Vector<Ant> antsVector) {
+	public WorkerAI(Vector<Ant> antsVector) {
 		super(antsVector);
 	}
 
@@ -31,8 +31,8 @@ public class AntWorkerAI extends BaseAI{
 			}
 			synchronized(antsVector) {
 				for (Ant ant : antsVector) {
-					if (ant instanceof AntWorker) {
-						move((AntWorker) ant);
+					if (ant instanceof Worker) {
+						move((Worker) ant);
 					}
 				}
 			}
@@ -46,12 +46,12 @@ public class AntWorkerAI extends BaseAI{
 
 	//TODO refactor repeating code
 
-	private void move(AntWorker antWorker) {
-		int x = antWorker.getPosX();
-		int y = antWorker.getPosY();
-		if (x == homeX && y == homeY || x == antWorker.getSpawnX() && y == antWorker.getSpawnY())
-			antWorker.changeDestination();
-		if (antWorker.getDestination() == Destination.HOME) {
+	private void move(Worker worker) {
+		int x = worker.getPosX();
+		int y = worker.getPosY();
+		if (x == homeX && y == homeY || x == worker.getSpawnX() && y == worker.getSpawnY())
+			worker.changeDestination();
+		if (worker.getDestination() == Destination.HOME) {
 			double dx = (double)(homeX - x) / 10;
 			if (Math.abs(dx) < 1)
 				dx = 1 * Math.signum(dx);
@@ -61,18 +61,18 @@ public class AntWorkerAI extends BaseAI{
 			x += dx;
 			y += dy;
 		} else {
-			double dx = (double)(antWorker.getSpawnX() - x) / 10;
+			double dx = (double)(worker.getSpawnX() - x) / 10;
 			if (Math.abs(dx) < 1)
 				dx = 1 * Math.signum(dx);
-			double dy = (double)(antWorker.getSpawnY() - y) / 10;
+			double dy = (double)(worker.getSpawnY() - y) / 10;
 			if (Math.abs(dy) < 1)
 				dy = 1 * Math.signum(dy);
 			x += dx;
 			y += dy;
 		}
-		antWorker.setPosX(x);
-		antWorker.setPosY(y);
-		antWorker.moveImage();
+		worker.setPosX(x);
+		worker.setPosY(y);
+		worker.moveImage();
 	}
 
 	public void pause() {

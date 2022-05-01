@@ -1,7 +1,7 @@
 package com.antsim.controllers;
 
-import com.antsim.ai.AntWarriorAI;
-import com.antsim.ai.AntWorkerAI;
+import com.antsim.ai.WarriorAI;
+import com.antsim.ai.WorkerAI;
 import com.antsim.ant.*;
 import com.antsim.model.Console;
 import com.antsim.model.Habitat;
@@ -22,8 +22,8 @@ public class Controller implements Initializable {
 	Habitat model = Habitat.getInstance();
 	AlertsView alertsView = AlertsView.getInstance();
 	Timer timer;
-	final AntWarriorAI antWarriorAI = new AntWarriorAI(model.getAntsVector());
-	final AntWorkerAI antWorkerAI = new AntWorkerAI(model.getAntsVector());
+	final WarriorAI warriorAI = new WarriorAI(model.getAntsVector());
+	final WorkerAI antWorkerAI = new WorkerAI(model.getAntsVector());
 
 	private boolean canShowStatistics = false;
 	ConsoleController consoleController;
@@ -42,29 +42,29 @@ public class Controller implements Initializable {
 	@FXML
 	RadioButton hideTimeButton;
 	@FXML
-	ComboBox<Integer> antWarriorChanceBox;
+	ComboBox<Integer> warriorChanceBox;
 	@FXML
-	ComboBox<Integer> antWorkerChanceBox;
+	ComboBox<Integer> workerChanceBox;
 	@FXML
-	Slider antWarriorSpawnDelaySlider;
+	Slider warriorSpawnDelaySlider;
 	@FXML
-	Slider antWorkerSpawnDelaySlider;
+	Slider workerSpawnDelaySlider;
 	@FXML
-	TextField antWarriorSpawnDelayTextF;
+	TextField warriorSpawnDelayTextF;
 	@FXML
-	TextField antWorkerSpawnDelayTextF;
+	TextField workerSpawnDelayTextF;
 	@FXML
-	TextField antWarriorLifeTimeTextF;
+	TextField warriorLifeTimeTextF;
 	@FXML
-	TextField antWorkerLifeTimeTextF;
+	TextField workerLifeTimeTextF;
 	@FXML
 	MenuItem startMenuItem;
 	@FXML
 	MenuItem pauseMenuItem;
 	@FXML
-	ComboBox<Integer> antWarriorThreadPriorityBox;
+	ComboBox<Integer> warriorThreadPriorityBox;
 	@FXML
-	ComboBox<Integer> antWorkerThreadPriorityBox;
+	ComboBox<Integer> workerThreadPriorityBox;
 	@FXML
 	ComboBox<Integer> mainThreadPriorityBox;
 
@@ -77,61 +77,61 @@ public class Controller implements Initializable {
 		launchAIThreads();
 
 		Integer[] chances = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
-		antWarriorChanceBox.getItems().addAll(chances);
-		antWorkerChanceBox.getItems().addAll(chances);
+		warriorChanceBox.getItems().addAll(chances);
+		workerChanceBox.getItems().addAll(chances);
 
 		Integer[] priorities = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-		antWarriorThreadPriorityBox.getItems().addAll(priorities);
-		antWorkerThreadPriorityBox.getItems().addAll(priorities);
+		warriorThreadPriorityBox.getItems().addAll(priorities);
+		workerThreadPriorityBox.getItems().addAll(priorities);
 		mainThreadPriorityBox.getItems().addAll(priorities);
 
-		antWarriorSpawnDelaySlider.valueProperty().addListener((observableValue, number, newValue) -> {
-			model.setAntWarriorSpawnDelay(newValue.intValue());
-			model.setTimeToAntWarriorSpawn(newValue.intValue());
-			antWarriorSpawnDelayTextF.setText("" + newValue.intValue());
+		warriorSpawnDelaySlider.valueProperty().addListener((observableValue, number, newValue) -> {
+			model.setWarriorSpawnDelay(newValue.intValue());
+			model.setTimeToWarriorSpawn(newValue.intValue());
+			warriorSpawnDelayTextF.setText("" + newValue.intValue());
 		});
 
 
-		antWorkerSpawnDelaySlider.valueProperty().addListener((observableValue, number, newValue) -> {
-			model.setAntWorkerSpawnDelay(newValue.intValue());
-			model.setTimeToAntWorkerSpawn(newValue.intValue());
-			antWorkerSpawnDelayTextF.setText("" + newValue.intValue());
+		workerSpawnDelaySlider.valueProperty().addListener((observableValue, number, newValue) -> {
+			model.setWorkerSpawnDelay(newValue.intValue());
+			model.setTimeToWorkerSpawn(newValue.intValue());
+			workerSpawnDelayTextF.setText("" + newValue.intValue());
 		});
 
-		antWarriorSpawnDelayTextF.textProperty().addListener((observableValue, oldVal, newVal) -> {
-			if(!newVal.matches("\\d*")) antWarriorSpawnDelayTextF.setText(newVal.replaceAll("\\D", ""));
-			String s = antWarriorSpawnDelayTextF.getText();
+		warriorSpawnDelayTextF.textProperty().addListener((observableValue, oldVal, newVal) -> {
+			if(!newVal.matches("\\d*")) warriorSpawnDelayTextF.setText(newVal.replaceAll("\\D", ""));
+			String s = warriorSpawnDelayTextF.getText();
 			if(s.length() > 2) {
-				antWarriorSpawnDelayTextF.setText(s.substring(0, 2));
+				warriorSpawnDelayTextF.setText(s.substring(0, 2));
 			}
 		});
 
-		antWorkerSpawnDelayTextF.textProperty().addListener((observableValue, oldVal, newVal) -> {
+		workerSpawnDelayTextF.textProperty().addListener((observableValue, oldVal, newVal) -> {
 			if(!newVal.matches("\\d")) {
-				antWorkerSpawnDelayTextF.setText(newVal.replaceAll("\\D", ""));
+				workerSpawnDelayTextF.setText(newVal.replaceAll("\\D", ""));
 			}
-			String s = antWorkerSpawnDelayTextF.getText();
+			String s = workerSpawnDelayTextF.getText();
 			if(s.length() > 2) {
-				antWorkerSpawnDelayTextF.setText(s.substring(0, 2));
+				workerSpawnDelayTextF.setText(s.substring(0, 2));
 			}
 		});
 
-		antWarriorLifeTimeTextF.textProperty().addListener((observableValue, oldVal, newVal) -> {
+		warriorLifeTimeTextF.textProperty().addListener((observableValue, oldVal, newVal) -> {
 			if(!newVal.matches("\\d")) {
-				antWarriorLifeTimeTextF.setText(newVal.replaceAll("\\D", ""));
+				warriorLifeTimeTextF.setText(newVal.replaceAll("\\D", ""));
 			}
-			String s = antWarriorLifeTimeTextF.getText();
+			String s = warriorLifeTimeTextF.getText();
 			if(s.length() > 2)
-				antWarriorLifeTimeTextF.setText(s.substring(0, 2));
+				warriorLifeTimeTextF.setText(s.substring(0, 2));
 		});
 
-		antWorkerLifeTimeTextF.textProperty().addListener((observableValue, oldVal, newVal) -> {
+		workerLifeTimeTextF.textProperty().addListener((observableValue, oldVal, newVal) -> {
 			if(!newVal.matches("\\d")) {
-				antWorkerLifeTimeTextF.setText(newVal.replaceAll("\\D", ""));
+				workerLifeTimeTextF.setText(newVal.replaceAll("\\D", ""));
 			}
-			String s = antWorkerLifeTimeTextF.getText();
+			String s = workerLifeTimeTextF.getText();
 			if(s.length() > 2)
-				antWorkerLifeTimeTextF.setText(s.substring(0, 2));
+				workerLifeTimeTextF.setText(s.substring(0, 2));
 		});
 
 		setDefaultValuesToView();
@@ -177,8 +177,8 @@ public class Controller implements Initializable {
 		}
 		model.getAntsIdsHashSet().clear();
 		model.getAntsSpawnTimeTree().clear();
-		model.setAntWarriorCount(0);
-		model.setAntWorkerCount(0);
+		model.setWarriorCount(0);
+		model.setWorkerCount(0);
 		model.setTime(0);
 		updateTimerText();
 	}
@@ -227,19 +227,19 @@ public class Controller implements Initializable {
 	}
 
 	public void changeAntWarriorSpawnChance() {
-		model.setAntWarriorSpawnChance(antWarriorChanceBox.getValue());
+		model.setWarriorSpawnChance(warriorChanceBox.getValue());
 	}
 
 	public void changeAntWorkerSpawnChance() {
-		model.setAntWorkerSpawnChance(antWorkerChanceBox.getValue());
+		model.setWorkerSpawnChance(workerChanceBox.getValue());
 	}
 
 	public void changeAntWarriorSpawnDelayTextF() {
-		if (!Objects.equals(antWarriorSpawnDelayTextF.getText(), "")) {
-			int tmp = Integer.parseInt(antWarriorSpawnDelayTextF.getText());
+		if (!Objects.equals(warriorSpawnDelayTextF.getText(), "")) {
+			int tmp = Integer.parseInt(warriorSpawnDelayTextF.getText());
 			if(tmp >= Habitat.MIN_SPAWN_DELAY && tmp <= Habitat.MAX_SPAWN_DELAY) {
-				model.setAntWarriorSpawnDelay(tmp);
-				antWarriorSpawnDelaySlider.setValue(tmp);
+				model.setWarriorSpawnDelay(tmp);
+				warriorSpawnDelaySlider.setValue(tmp);
 			} else {
 				alertsView.getInvalidValueAlert().setContentText("Choose value between " + Habitat.MIN_SPAWN_DELAY + " and " + Habitat.MAX_SPAWN_DELAY);
 				alertsView.getInvalidValueAlert().show();
@@ -248,11 +248,11 @@ public class Controller implements Initializable {
 	}
 
 	public void changeAntWorkerSpawnDelayTextF() {
-		if (!Objects.equals(antWorkerSpawnDelayTextF.getText(), "")) {
-			int tmp = Integer.parseInt(antWorkerSpawnDelayTextF.getText());
+		if (!Objects.equals(workerSpawnDelayTextF.getText(), "")) {
+			int tmp = Integer.parseInt(workerSpawnDelayTextF.getText());
 			if(tmp >= Habitat.MIN_SPAWN_DELAY && tmp <= Habitat.MAX_SPAWN_DELAY) {
-				model.setAntWorkerSpawnDelay(tmp);
-				antWorkerSpawnDelaySlider.setValue(tmp);
+				model.setWorkerSpawnDelay(tmp);
+				workerSpawnDelaySlider.setValue(tmp);
 			} else {
 				alertsView.getInvalidValueAlert().setContentText("Choose value between " + Habitat.MIN_SPAWN_DELAY + " and " + Habitat.MAX_SPAWN_DELAY);
 				alertsView.getInvalidValueAlert().show();
@@ -261,10 +261,10 @@ public class Controller implements Initializable {
 	}
 
 	public void changeAntWarriorLifeTime() {
-		if (!Objects.equals(antWarriorLifeTimeTextF.getText(), "")) {
-			int tmp = Integer.parseInt(antWarriorLifeTimeTextF.getText());
+		if (!Objects.equals(warriorLifeTimeTextF.getText(), "")) {
+			int tmp = Integer.parseInt(warriorLifeTimeTextF.getText());
 			if(tmp >= Habitat.MIN_LIFE_TIME && tmp <= Habitat.MAX_LIFE_TIME) {
-				model.setAntWarriorLifeTime(tmp);
+				model.setWarriorLifeTime(tmp);
 			} else {
 				alertsView.getInvalidValueAlert().setContentText("Choose value between "+Habitat.MIN_LIFE_TIME+" and "+Habitat.MAX_LIFE_TIME);
 				alertsView.getInvalidValueAlert().show();
@@ -274,10 +274,10 @@ public class Controller implements Initializable {
 
 
 	public void changeAntWorkerLifeTime() {
-		if (!Objects.equals(antWorkerLifeTimeTextF.getText(), "")) {
-			int tmp = Integer.parseInt(antWorkerLifeTimeTextF.getText());
+		if (!Objects.equals(workerLifeTimeTextF.getText(), "")) {
+			int tmp = Integer.parseInt(workerLifeTimeTextF.getText());
 			if(tmp >= Habitat.MIN_LIFE_TIME && tmp <= Habitat.MAX_LIFE_TIME) {
-				model.setAntWorkerLifeTime(tmp);
+				model.setWorkerLifeTime(tmp);
 			} else {
 				alertsView.getInvalidValueAlert().setContentText("Choose value between " + Habitat.MIN_LIFE_TIME +
 						" and " + Habitat.MAX_LIFE_TIME);
@@ -287,13 +287,13 @@ public class Controller implements Initializable {
 	}
 
 	public void changeAntWarriorThreadPriority() {
-		model.setAntWarriorThreadPriority(antWarriorThreadPriorityBox.getValue());
-		antWarriorAI.setPriority(model.getAntWarriorThreadPriority());
+		model.setWarriorThreadPriority(warriorThreadPriorityBox.getValue());
+		warriorAI.setPriority(model.getWarriorThreadPriority());
 	}
 
 	public void changeAntWorkerThreadPriority() {
-		model.setAntWorkerThreadPriority(antWorkerThreadPriorityBox.getValue());
-		antWorkerAI.setPriority(model.getAntWorkerThreadPriority());
+		model.setWorkerThreadPriority(workerThreadPriorityBox.getValue());
+		antWorkerAI.setPriority(model.getWorkerThreadPriority());
 	}
 
 	public void changeMainThreadPriority() {
@@ -302,25 +302,25 @@ public class Controller implements Initializable {
 	}
 
 	public void changeMovement() {
-		if (antWarriorAI.isPaused())
+		if (warriorAI.isPaused())
 			startAllMovement();
 		else
 			stopAllMovement();
 	}
 
 	public void setDefaultValuesToView() {
-		antWarriorChanceBox.setValue(model.getAntWarriorSpawnChance());
-		antWorkerChanceBox.setValue(model.getAntWorkerSpawnChance());
-		antWarriorSpawnDelaySlider.setValue(model.getAntWarriorSpawnDelay());
-		antWorkerSpawnDelaySlider.setValue(model.getAntWorkerSpawnDelay());
-		antWarriorSpawnDelayTextF.setText(Integer.toString(model.getAntWarriorSpawnDelay()));
-		antWorkerSpawnDelayTextF.setText(Integer.toString(model.getAntWorkerSpawnDelay()));
-		antWarriorLifeTimeTextF.setText(Integer.toString(model.getAntWarriorLifeTime()));
-		antWorkerLifeTimeTextF.setText(Integer.toString(model.getAntWorkerLifeTime()));
-		antWarriorThreadPriorityBox.setValue(model.getAntWarriorThreadPriority());
-		antWarriorAI.setPriority(model.getAntWarriorThreadPriority());
-		antWorkerThreadPriorityBox.setValue(model.getAntWorkerThreadPriority());
-		antWorkerAI.setPriority(model.getAntWorkerThreadPriority());
+		warriorChanceBox.setValue(model.getWarriorSpawnChance());
+		workerChanceBox.setValue(model.getWorkerSpawnChance());
+		warriorSpawnDelaySlider.setValue(model.getWarriorSpawnDelay());
+		workerSpawnDelaySlider.setValue(model.getWorkerSpawnDelay());
+		warriorSpawnDelayTextF.setText(Integer.toString(model.getWarriorSpawnDelay()));
+		workerSpawnDelayTextF.setText(Integer.toString(model.getWorkerSpawnDelay()));
+		warriorLifeTimeTextF.setText(Integer.toString(model.getWarriorLifeTime()));
+		workerLifeTimeTextF.setText(Integer.toString(model.getWorkerLifeTime()));
+		warriorThreadPriorityBox.setValue(model.getWarriorThreadPriority());
+		warriorAI.setPriority(model.getWarriorThreadPriority());
+		workerThreadPriorityBox.setValue(model.getWorkerThreadPriority());
+		antWorkerAI.setPriority(model.getWorkerThreadPriority());
 		mainThreadPriorityBox.setValue(model.getMainThreadPriority());
 		Thread.currentThread().setPriority(model.getMainThreadPriority());
 	}
@@ -348,29 +348,29 @@ public class Controller implements Initializable {
 	}
 
 	private void spawnWarrior(int time) {
-		AntWarrior a = new AntWarrior();
+		Warrior a = new Warrior();
 		int id = getNewID();
-		a.spawn(antsArea, time, model.getAntWarriorLifeTime(), id);
+		a.spawn(antsArea, time, model.getWarriorLifeTime(), id);
 		synchronized(model.getAntsVector()){
 			model.getAntsVector().add(a);
 		}
 		model.getAntsIdsHashSet().add(id);
 		model.getAntsSpawnTimeTree().put(id, time);
-		model.setAntWarriorCount(model.getAntWarriorCount() + 1);
-		model.setTimeToAntWarriorSpawn(model.getAntWarriorSpawnDelay());
+		model.setWarriorCount(model.getWarriorCount() + 1);
+		model.setTimeToWarriorSpawn(model.getWarriorSpawnDelay());
 	}
 
 	private void spawnWorker(int time) {
-		AntWorker a = new AntWorker();
+		Worker a = new Worker();
 		int id = getNewID();
-		a.spawn(antsArea, time, model.getAntWorkerLifeTime(), id);
+		a.spawn(antsArea, time, model.getWorkerLifeTime(), id);
 		synchronized(model.getAntsVector()) {
 			model.getAntsVector().add(a);
 		}
 		model.getAntsIdsHashSet().add(id);
 		model.getAntsSpawnTimeTree().put(id, time);
-		model.setAntWorkerCount(model.getAntWorkerCount() + 1);
-		model.setTimeToAntWorkerSpawn(model.getAntWorkerSpawnDelay());
+		model.setWorkerCount(model.getWorkerCount() + 1);
+		model.setTimeToWorkerSpawn(model.getWorkerSpawnDelay());
 	}
 
 	private void removeAnt(Ant ant) {
@@ -380,10 +380,10 @@ public class Controller implements Initializable {
 		synchronized(model.getAntsVector()) {
 			model.getAntsVector().remove(ant);
 		}
-		if (ant instanceof AntWarrior)
-			model.setAntWarriorCount(model.getAntWarriorCount() - 1);
+		if (ant instanceof Warrior)
+			model.setWarriorCount(model.getWarriorCount() - 1);
 		else
-			model.setAntWorkerCount(model.getAntWorkerCount() - 1);
+			model.setWorkerCount(model.getWorkerCount() - 1);
 	}
 
 	private void checkLifeTime(int time) {
@@ -401,14 +401,14 @@ public class Controller implements Initializable {
 
 	private void update(int time) {
 		Random rand = new Random();
-		model.setTimeToAntWarriorSpawn(model.getTimeToAntWarriorSpawn() - 1);
-		model.setTimeToAntWorkerSpawn(model.getTimeToAntWorkerSpawn() - 1);
+		model.setTimeToWarriorSpawn(model.getTimeToWarriorSpawn() - 1);
+		model.setTimeToWorkerSpawn(model.getTimeToWorkerSpawn() - 1);
 		model.setTime(time);
 		updateTimerText();
-		if(model.getTimeToAntWarriorSpawn() <= 0 && rand.nextInt(100) < model.getAntWarriorSpawnChance()) {
+		if(model.getTimeToWarriorSpawn() <= 0 && rand.nextInt(100) < model.getWarriorSpawnChance()) {
 			spawnWarrior(time);
 		}
-		if(model.getTimeToAntWorkerSpawn() <= 0 && rand.nextInt(100) < model.getAntWorkerSpawnChance()) {
+		if(model.getTimeToWorkerSpawn() <= 0 && rand.nextInt(100) < model.getWorkerSpawnChance()) {
 			spawnWorker(time);
 		}
 		checkLifeTime(time);
@@ -437,22 +437,22 @@ public class Controller implements Initializable {
 
 	private void updateStatisticText() {
 		alertsView.getEndSimulationAlert().setHeaderText("Simulation time: " + model.getTime()
-				+ "\nWarriors: " + model.getAntWarriorCount() + "\nWorker: " + model.getAntWorkerCount());
+				+ "\nWarriors: " + model.getWarriorCount() + "\nWorker: " + model.getWorkerCount());
 	}
 
 	private void launchAIThreads() {
-		antWarriorAI.start();
+		warriorAI.start();
 		antWorkerAI.start();
 	}
 
 	private void stopAllMovement() {
-		antWarriorAI.pause();
+		warriorAI.pause();
 		antWorkerAI.pause();
 	}
 
 	private void startAllMovement() {
 		if (startButton.isDisabled()) {  //if simulation stopped
-			antWarriorAI.unpause();
+			warriorAI.unpause();
 			antWorkerAI.unpause();
 		}
 	}

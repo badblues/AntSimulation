@@ -33,7 +33,7 @@ public class SaverController {
                         model.getAntsVector().add(ant);
                         model.getAntsIdsHashSet().add(ant.getId());
                         model.getAntsSpawnTimeTree().put(ant.getId(), model.getTime());
-                        model.setAntWarriorCount(model.getAntWarriorCount() + 1);
+                        model.setWarriorCount(model.getWarriorCount() + 1);
                     } catch(EOFException ex) {
                         break;
                     }
