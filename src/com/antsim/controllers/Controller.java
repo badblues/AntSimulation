@@ -1,20 +1,19 @@
-package com.antsim;
+package com.antsim.controllers;
 
 import com.antsim.ai.AntWarriorAI;
 import com.antsim.ai.AntWorkerAI;
 import com.antsim.ant.*;
+import com.antsim.model.Console;
+import com.antsim.model.Habitat;
+import com.antsim.view.AlertsView;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
-import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
@@ -332,13 +331,13 @@ public class Controller implements Initializable {
 
 
 	public void saveAnts() {
-		SaverController.save();
+		SaverController.saveAll();
 	}
 
 	public void loadAnts() {
 		pauseSimulation();
 		endSimulation();
-		SaverController.load(antsArea);
+		SaverController.loadAll(antsArea);
 	}
 
 	private int getNewID() {

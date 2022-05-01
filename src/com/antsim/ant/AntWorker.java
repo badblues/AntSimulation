@@ -1,15 +1,18 @@
 package com.antsim.ant;
 
-import com.antsim.IBehavior;
-import com.antsim.ai.AntWorkerAI;
 import com.antsim.ai.Destination;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serial;
+
 public class AntWorker extends Ant implements IBehavior {
-    final ImageView antWorkerImageView = new ImageView(new Image("resources/ant_worker.png"));
-    Group root;
+    transient ImageView antWorkerImageView = new ImageView(new Image("resources/images/ant_worker.png"));
+    transient Group root;
     Destination destination = Destination.HOME;
 
     public AntWorker(int posX, int posY, int spawnX, int spawnY, int destination) {
@@ -36,6 +39,17 @@ public class AntWorker extends Ant implements IBehavior {
     public void moveImage() {
         antWorkerImageView.setX(posX);
         antWorkerImageView.setY(posY);
+    }
+
+    @Serial
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+    }
+
+    @Serial
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        this.antWorkerImageView = new ImageView(new Image("resources/images/ant_worker.png"));
     }
 
     public void destroyAnt() {

@@ -1,5 +1,6 @@
-package com.antsim;
+package com.antsim.model;
 
+import com.antsim.controllers.ConsoleController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -13,7 +14,7 @@ public class Console {
 
     public Console() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("view/Console.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/Console.fxml"));
             Parent root = loader.load();
             consoleController = loader.getController();
             Stage stage = new Stage();
@@ -24,7 +25,7 @@ public class Console {
         }
     }
 
-    ConsoleController getConsoleController() {
+    public ConsoleController getConsoleController() {
         return consoleController;
     }
 }

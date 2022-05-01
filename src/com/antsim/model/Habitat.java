@@ -1,5 +1,6 @@
-package com.antsim;
+package com.antsim.model;
 
+import com.antsim.controllers.ConfigController;
 import com.antsim.ant.*;
 
 import javafx.application.*;
@@ -10,15 +11,13 @@ import javafx.stage.*;
 
 import java.util.*;
 
-//TODO ключ тримапы - класс АНТ
-//TODO поиск в дереве по value и удаление по Id
 
 public class Habitat extends Application {
 
-	static final int MAX_SPAWN_DELAY = 30;
-	static final int MIN_SPAWN_DELAY = 1;
-	static final int MIN_LIFE_TIME = 1;
-	static final int MAX_LIFE_TIME = 20;
+	static final public int MAX_SPAWN_DELAY = 30;
+	static final public int MIN_SPAWN_DELAY = 1;
+	static final public int MIN_LIFE_TIME = 1;
+	static final public int MAX_LIFE_TIME = 20;
 	private static Habitat instance;
 	private final Vector<Ant> antsVector = new Vector<>();
 	private final HashSet<Integer> antsIds = new HashSet<>();
@@ -38,7 +37,7 @@ public class Habitat extends Application {
 	private int antWorkerThreadPriority = 5;
 	private int mainThreadPriority = 5;
 
-	static synchronized Habitat getInstance() {
+	public static synchronized Habitat getInstance() {
 		if(instance == null)
 			instance = new Habitat();
 		return instance;
@@ -52,7 +51,8 @@ public class Habitat extends Application {
 	@Override
 	public void start(Stage stage) {
 		try {
-			Parent root = FXMLLoader.load(getClass().getResource("view/AntSim.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/AntSim.fxml"));
+			Parent root = loader.load();
 			Scene scene = new Scene(root);
 			stage.setScene(scene);
 			stage.setResizable(false);
@@ -67,99 +67,99 @@ public class Habitat extends Application {
 		}
 	}
 
-	Vector<Ant> getAntsVector() {
+	public Vector<Ant> getAntsVector() {
 		return antsVector;
 	}
 
-	HashSet<Integer> getAntsIdsHashSet() {
+	public HashSet<Integer> getAntsIdsHashSet() {
         return antsIds;
     }
 
-	TreeMap<Integer, Integer> getAntsSpawnTimeTree() {
+	public TreeMap<Integer, Integer> getAntsSpawnTimeTree() {
         return antsSpawnTime;
     }
 
-	int getAntWarriorSpawnChance() {
+	public int getAntWarriorSpawnChance() {
 		return antWarriorSpawnChance;
 	}
 
-	void setAntWarriorSpawnChance(int chance) {
+	public void setAntWarriorSpawnChance(int chance) {
 		antWarriorSpawnChance = chance;
 	}
 
-	int getAntWorkerSpawnChance() {
+	public int getAntWorkerSpawnChance() {
 		return antWorkerSpawnChance;
 	}
 
-	void setAntWorkerSpawnChance(int chance) {
+	public void setAntWorkerSpawnChance(int chance) {
 		antWorkerSpawnChance = chance;
 	}
 
-	int getAntWarriorSpawnDelay() {
+	public int getAntWarriorSpawnDelay() {
 		return antWarriorSpawnDelay;
 	}
 
-	void setAntWarriorSpawnDelay(int delay) {
+	public void setAntWarriorSpawnDelay(int delay) {
 		antWarriorSpawnDelay = delay;
 	}
 
-	int getAntWorkerSpawnDelay() {return antWorkerSpawnDelay;}
+	public int getAntWorkerSpawnDelay() {return antWorkerSpawnDelay;}
 
-	void setAntWorkerSpawnDelay(int delay) {
+	public void setAntWorkerSpawnDelay(int delay) {
 		antWorkerSpawnDelay = delay;
 	}
 
-	int getAntWarriorCount() {
+	public int getAntWarriorCount() {
 		return antWarriorCount;
 	}
 
-	void setAntWarriorCount(int count) {
+	public void setAntWarriorCount(int count) {
 		antWarriorCount = count;
 	}
 
-	int getAntWorkerCount() {
+	public int getAntWorkerCount() {
 		return antWorkerCount;
 	}
 
-	void setAntWorkerCount(int count) {
+	public void setAntWorkerCount(int count) {
 		antWorkerCount = count;
 	}
 
-	int getTime() {
+	public int getTime() {
 		return time;
 	}
 
-	void setTime(int time) {
+	public void setTime(int time) {
 		this.time = time;
 	}
 
-	int getTimeToAntWarriorSpawn() {
+	public int getTimeToAntWarriorSpawn() {
 		return timeToAntWarriorSpawn;
 	}
 
-	void setTimeToAntWarriorSpawn(int time) {timeToAntWarriorSpawn = time;}
+	public void setTimeToAntWarriorSpawn(int time) {timeToAntWarriorSpawn = time;}
 
-	int getTimeToAntWorkerSpawn() {
+	public int getTimeToAntWorkerSpawn() {
 		return timeToAntWorkerSpawn;
 	}
 
-	void setTimeToAntWorkerSpawn(int time) {
+	public void setTimeToAntWorkerSpawn(int time) {
         timeToAntWorkerSpawn = time;
     }
 
-	int getAntWarriorLifeTime() {
+	public int getAntWarriorLifeTime() {
         return antWarriorLifeTime;
     }
 
-	void setAntWarriorLifeTime(int time) {
+	public void setAntWarriorLifeTime(int time) {
         antWarriorLifeTime = time;
     }
 
-	int getAntWorkerLifeTime() {
+	public int getAntWorkerLifeTime() {
         return antWorkerLifeTime;
     }
 
-	void setAntWorkerLifeTime(int time) {
+	public void setAntWorkerLifeTime(int time) {
         antWorkerLifeTime = time;
     }
 

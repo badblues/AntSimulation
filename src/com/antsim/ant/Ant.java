@@ -1,9 +1,9 @@
 package com.antsim.ant;
 
-import com.antsim.IBehavior;
+import com.antsim.model.Habitat;
 import javafx.scene.*;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.*;
 
 
@@ -29,6 +29,17 @@ public abstract class Ant implements IBehavior, Serializable {
 		Random rand = new Random();
 		posX = spawnX = rand.nextInt(760);
 		posY = spawnY = rand.nextInt(660) + 20;
+	}
+
+	@Serial
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		lifeTime -= Habitat.getInstance().getTime() - spawnTime;  //making that ant dies in right time after loading
+		out.defaultWriteObject();
+	}
+
+	@Serial
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
 	}
 
 	public abstract void spawn(Group root, int time, int lifeT, int id);

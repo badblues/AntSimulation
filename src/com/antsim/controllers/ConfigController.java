@@ -1,4 +1,6 @@
-package com.antsim;
+package com.antsim.controllers;
+
+import com.antsim.model.Habitat;
 
 import java.io.*;
 import java.util.Scanner;
@@ -6,7 +8,7 @@ import java.util.Scanner;
 public class ConfigController {
 
 	private static Habitat model = Habitat.getInstance();
-	private static String fpath = "src/com/antsim/config/conf.txt";
+	private static String fpath = "src/resources/data/conf.txt";
 
 	static public void load() {
 		try {

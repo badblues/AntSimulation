@@ -1,4 +1,4 @@
-package com.antsim;
+package com.antsim.view;
 
 import javafx.scene.control.Alert;
 
@@ -10,7 +10,7 @@ public class AlertsView {
 	Alert endSimulationAlert = new Alert(Alert.AlertType.CONFIRMATION);
 	Alert aliveAntsAlert = new Alert(Alert.AlertType.INFORMATION);
 
-	static synchronized AlertsView getInstance() {
+	public static synchronized AlertsView getInstance() {
 		if (instance == null)
 			instance = new AlertsView();
 		return instance;

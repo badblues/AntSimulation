@@ -1,16 +1,19 @@
 package com.antsim.ant;
 
-import com.antsim.IBehavior;
 import javafx.scene.*;
 import javafx.scene.image.*;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serial;
 import java.util.Random;
 
 public class AntWarrior extends Ant implements IBehavior {
-	final ImageView antWarriorImageView = new ImageView(new Image("resources/ant_warrior.png"));
-	Group root;
+	transient ImageView antWarriorImageView = new ImageView(new Image("resources/images/ant_warrior.png"));
+	transient Group root;
 	double movementAngle = 0;
-	public static double movementRadius = 30;
+	public static final double MOVEMENT_RADIUS = 30;
 	int movementDirection;
 
 	public AntWarrior() {
@@ -47,6 +50,17 @@ public class AntWarrior extends Ant implements IBehavior {
 			antWarriorImageView.setRotate(movementAngle * 180/Math.PI + 180);
 		else
 			antWarriorImageView.setRotate(movementAngle * 180/Math.PI);
+	}
+
+	@Serial
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.defaultWriteObject();
+	}
+
+	@Serial
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
+		this.antWarriorImageView = new ImageView(new Image("resources/images/ant_warrior.png"));
 	}
 
 	public void destroyAnt() {

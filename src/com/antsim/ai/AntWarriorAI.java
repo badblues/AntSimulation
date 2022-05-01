@@ -41,8 +41,8 @@ public class AntWarriorAI extends BaseAI{
 
 	private void move(AntWarrior antWarrior) {
 		antWarrior.setMovementAngle(antWarrior.getMovementAngle() + Math.PI/50 * antWarrior.getMovementDirection());
-		antWarrior.setPosX(antWarrior.getSpawnX() + (int)(AntWarrior.movementRadius * Math.cos(antWarrior.getMovementAngle())));
-		antWarrior.setPosY(antWarrior.getSpawnY() + (int)(AntWarrior.movementRadius * Math.sin(antWarrior.getMovementAngle())));
+		antWarrior.setPosX(antWarrior.getSpawnX() + (int)(AntWarrior.MOVEMENT_RADIUS * Math.cos(antWarrior.getMovementAngle())));
+		antWarrior.setPosY(antWarrior.getSpawnY() + (int)(AntWarrior.MOVEMENT_RADIUS * Math.sin(antWarrior.getMovementAngle())));
 		antWarrior.moveImage();
 	}
 
