@@ -7,10 +7,10 @@ import java.util.Properties;
 
 public class ConfigController {
 
-	private static Habitat model = Habitat.getInstance();
-	private static String fpath = "src/resources/data/config.properties";
+	private Habitat model = Habitat.getInstance();
+	private String fpath = "src/resources/data/config.properties";
 
-	static public void load() {
+	public void load() {
 		try {
 			Properties props = new Properties();
 			FileReader reader = new FileReader(fpath);
@@ -24,7 +24,7 @@ public class ConfigController {
 		}
 	}
 
-	static public void save() {
+	public void save() {
 		try {
 			Properties props = new Properties();
 			FileWriter writer = new FileWriter(fpath);
@@ -43,7 +43,7 @@ public class ConfigController {
 		}
 	}
 
-	private static void loadValues(Properties props) {
+	private void loadValues(Properties props) {
 		int val;
 		val = Integer.parseInt(props.getProperty("warrior_spawn_chance", "100"));
 		if (val >= 0 && val <= 100 && val % 10 == 0)

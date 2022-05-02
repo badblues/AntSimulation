@@ -18,17 +18,6 @@ import java.net.URL;
 import java.util.*;
 
 public class Controller implements Initializable {
-
-	Habitat model = Habitat.getInstance();
-	AlertsView alertsView = AlertsView.getInstance();
-	Timer timer;
-	final WarriorAI warriorAI = new WarriorAI(model.getAntsVector());
-	final WorkerAI antWorkerAI = new WorkerAI(model.getAntsVector());
-
-	private boolean canShowStatistics = false;
-	ConsoleController consoleController;
-	Console console;
-
 	@FXML
 	Group antsArea;
 	@FXML
@@ -67,6 +56,18 @@ public class Controller implements Initializable {
 	ComboBox<Integer> workerThreadPriorityBox;
 	@FXML
 	ComboBox<Integer> mainThreadPriorityBox;
+
+	Habitat model = Habitat.getInstance();
+	AlertsView alertsView = AlertsView.getInstance();
+	Timer timer;
+	final WarriorAI warriorAI = new WarriorAI(model.getAntsVector());
+	final WorkerAI antWorkerAI = new WorkerAI(model.getAntsVector());
+
+	private boolean canShowStatistics = false;
+	Console console;
+	ConsoleController consoleController;
+	LocalSaverController localSaverController = new LocalSaverController();
+	SQLSaverController sqlSaverController = new SQLSaverController();
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -331,13 +332,43 @@ public class Controller implements Initializable {
 
 
 	public void saveAnts() {
-		SaverController.saveAll();
+		localSaverController.saveAll();
 	}
 
 	public void loadAnts() {
 		pauseSimulation();
 		endSimulation();
-		SaverController.loadAll(antsArea);
+		localSaverController.loadAll(antsArea);
+	}
+
+	public void importAllFromDB() {
+		pauseSimulation();
+		endSimulation();
+		sqlSaverController.loadAll(antsArea);
+	}
+
+	public void importWarriorsFromDB() {
+		pauseSimulation();
+		endSimulation();
+		sqlSaverController.loadWarriors(antsArea);
+	}
+
+	public void importWorkersFromDB() {
+		pauseSimulation();
+		endSimulation();
+		sqlSaverController.loadWorkers(antsArea);
+	}
+
+	public void exportAllToDB() {
+		sqlSaverController.saveAll();
+	}
+
+	public void exportWarriorsToDB() {
+		sqlSaverController.saveWarriors();
+	}
+
+	public void exportWorkersToDB() {
+		sqlSaverController.saveWorkers();
 	}
 
 	private int getNewID() {
@@ -356,7 +387,7 @@ public class Controller implements Initializable {
 		}
 		model.getAntsIdsHashSet().add(id);
 		model.getAntsSpawnTimeTree().put(id, time);
-		model.setWarriorCount(model.getWarriorCount() + 1);
+		model.increaseWarriorCount(1);
 		model.setTimeToWarriorSpawn(model.getWarriorSpawnDelay());
 	}
 
@@ -369,7 +400,7 @@ public class Controller implements Initializable {
 		}
 		model.getAntsIdsHashSet().add(id);
 		model.getAntsSpawnTimeTree().put(id, time);
-		model.setWorkerCount(model.getWorkerCount() + 1);
+		model.increaseWorkerCount(1);
 		model.setTimeToWorkerSpawn(model.getWorkerSpawnDelay());
 	}
 

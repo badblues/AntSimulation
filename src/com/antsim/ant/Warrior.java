@@ -16,18 +16,18 @@ public class Warrior extends Ant implements IBehavior {
 	public static final double MOVEMENT_RADIUS = 30;
 	int movementDirection;
 
+	public Warrior(int posX, int posY, int spawnX, int spawnY, double movementAngle, int movementDirection) {
+		super(posX, posY, spawnX, spawnY);
+		this.movementAngle = movementAngle;
+		this.movementDirection = movementDirection;
+	}
+
 	public Warrior() {
 		super();
 		if (new Random().nextBoolean())
 			movementDirection = 1;
 		else
 			movementDirection = -1;
-	}
-
-	public Warrior(int posX, int posY, int spawnX, int spawnY, int movementDirection, double movementAngle) {
-		super(posX, posY, spawnX, spawnY);
-		this.movementDirection = movementDirection;
-		this.movementAngle = movementAngle;
 	}
 
 	@Override

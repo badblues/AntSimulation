@@ -163,8 +163,26 @@
                         <MenuItem fx:id="pauseMenuItem" mnemonicParsing="false" onAction="#pauseSimulation" text="Pause" />
                         <MenuItem mnemonicParsing="false" onAction="#endSimulation" text="Stop" />
                         <MenuItem fx:id="consoleMenuItem" mnemonicParsing="false" onAction="#showConsoleArea" text="Console" />
+                    </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Save">
+                    <items>
                         <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#saveAnts" text="Save" />
                         <MenuItem fx:id="loadMenuItem" mnemonicParsing="false" onAction="#loadAnts" text="Load" />
+                        <Menu mnemonicParsing="false" text="Import">
+                          <items>
+                              <MenuItem mnemonicParsing="false" onAction="#importAllFromDB" text="All" />
+                              <MenuItem mnemonicParsing="false" onAction="#importWarriorsFromDB" text="Warriors" />
+                            <MenuItem mnemonicParsing="false" onAction="#importWorkersFromDB" text="Workers" />
+                          </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Export">
+                          <items>
+                            <MenuItem mnemonicParsing="false" onAction="#exportAllToDB" text="All" />
+                              <MenuItem mnemonicParsing="false" onAction="#exportWarriorsToDB" text="Warriors" />
+                              <MenuItem mnemonicParsing="false" onAction="#exportWorkersToDB" text="Workers" />
+                          </items>
+                        </Menu>
                     </items>
                   </Menu>
                </menus>

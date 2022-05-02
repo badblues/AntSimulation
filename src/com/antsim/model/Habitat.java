@@ -19,6 +19,7 @@ public class Habitat extends Application {
 	static final public int MIN_LIFE_TIME = 1;
 	static final public int MAX_LIFE_TIME = 20;
 	private static Habitat instance;
+	private static ConfigController configController = new ConfigController();
 	private final Vector<Ant> antsVector = new Vector<>();
 	private final HashSet<Integer> antsIds = new HashSet<>();
 	private final TreeMap<Integer, Integer> antsSpawnTime = new TreeMap<>();
@@ -44,7 +45,7 @@ public class Habitat extends Application {
 	}
 
 	public static void main(String[] args) {
-		ConfigController.load();
+		configController.load();
 		launch(args);
 	}
 
@@ -57,7 +58,7 @@ public class Habitat extends Application {
 			stage.setScene(scene);
 			stage.setResizable(false);
 			stage.setOnCloseRequest(windowEvent ->  {
-				ConfigController.save();
+				configController.save();
 				Platform.exit();
 				System.exit(0);
 			});
@@ -127,6 +128,14 @@ public class Habitat extends Application {
 
 	public int getTime() {
 		return time;
+	}
+
+	public void increaseWarriorCount(int i) {
+		warriorCount += i;
+	}
+
+	public void increaseWorkerCount(int i) {
+		workerCount += i;
 	}
 
 	public void setTime(int time) {

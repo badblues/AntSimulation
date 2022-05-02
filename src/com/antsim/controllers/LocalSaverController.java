@@ -1,16 +1,17 @@
 package com.antsim.controllers;
 
 import com.antsim.ant.Ant;
+import com.antsim.ant.Warrior;
 import com.antsim.model.Habitat;
 import javafx.scene.Group;
 
 import java.io.*;
 
-public class SaverController {
-    private static final Habitat model = Habitat.getInstance();
-    private static final String fpath = "src/resources/data/ants.bin";
+public class LocalSaverController {
+    private final Habitat model = Habitat.getInstance();
+    private final String fpath = "src/resources/data/ants.bin";
 
-    public static void saveAll() {
+    public void saveAll() {
         try(ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fpath, false))) {
             synchronized (model.getAntsVector()) {
                 for(Ant ant: model.getAntsVector()) {
@@ -23,7 +24,7 @@ public class SaverController {
         }
     }
 
-    public static void loadAll(Group antsArea) {
+    public void loadAll(Group antsArea) {
         try(ObjectInputStream in = new ObjectInputStream(new FileInputStream(fpath))) {
             synchronized (model.getAntsVector()) {
                 while(true) {
@@ -33,7 +34,10 @@ public class SaverController {
                         model.getAntsVector().add(ant);
                         model.getAntsIdsHashSet().add(ant.getId());
                         model.getAntsSpawnTimeTree().put(ant.getId(), model.getTime());
-                        model.setWarriorCount(model.getWarriorCount() + 1);
+                        if (ant instanceof Warrior)
+                            model.increaseWarriorCount(1);
+                        else
+                            model.increaseWorkerCount(1);
                     } catch(EOFException ex) {
                         break;
                     }

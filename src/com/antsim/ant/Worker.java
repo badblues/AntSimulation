@@ -15,9 +15,9 @@ public class Worker extends Ant implements IBehavior {
     transient Group root;
     Destination destination = Destination.HOME;
 
-    public Worker(int posX, int posY, int spawnX, int spawnY, int destination) {
+    public Worker(int posX, int posY, int spawnX, int spawnY, Destination destination) {
         super(posX, posY, spawnX, spawnY);
-        this.destination = Destination.values()[destination];
+        this.destination = destination;
     }
 
     public Worker() {
