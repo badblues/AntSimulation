@@ -17,7 +17,7 @@ import javafx.scene.text.Text;
 import java.net.URL;
 import java.util.*;
 
-public class Controller implements Initializable {
+public class SimulationController implements Initializable {
 	@FXML
 	Group antsArea;
 	@FXML
@@ -56,6 +56,10 @@ public class Controller implements Initializable {
 	ComboBox<Integer> workerThreadPriorityBox;
 	@FXML
 	ComboBox<Integer> mainThreadPriorityBox;
+	@FXML
+	CheckBox movementCheckbox;
+	@FXML
+	TextArea clientsText;
 
 	Habitat model = Habitat.getInstance();
 	AlertsView alertsView = AlertsView.getInstance();
@@ -68,14 +72,11 @@ public class Controller implements Initializable {
 	ConsoleController consoleController;
 	LocalSaverController localSaverController = new LocalSaverController();
 	SQLSaverController sqlSaverController = new SQLSaverController();
+	ClientController clientController = new ClientController(this);
+
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
-
-		console = new Console();
-		consoleController = console.getConsoleController();
-
-		launchAIThreads();
 
 		Integer[] chances = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
 		warriorChanceBox.getItems().addAll(chances);
@@ -137,6 +138,11 @@ public class Controller implements Initializable {
 
 		setDefaultValuesToView();
 
+		console = new Console();
+		consoleController = console.getConsoleController();
+
+		launchAIThreads();
+		clientController.start();
 	}
 
 	public void startSimulation() {
@@ -145,6 +151,7 @@ public class Controller implements Initializable {
 		pauseButton.setDisable(false);
 		pauseMenuItem.setDisable(false);
 		timer = startTimer();
+		movementCheckbox.setSelected(true);
 		startAllMovement();
 	}
 
@@ -369,6 +376,10 @@ public class Controller implements Initializable {
 
 	public void exportWorkersToDB() {
 		sqlSaverController.saveWorkers();
+	}
+
+	public void setCurrentClientsText(String text) {
+		clientsText.setText(text);
 	}
 
 	private int getNewID() {

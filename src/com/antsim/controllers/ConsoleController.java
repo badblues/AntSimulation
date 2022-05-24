@@ -10,10 +10,10 @@ public class ConsoleController {
     @FXML
     TextArea consoleArea;
     private Stage stage;
-    Controller controller;
-    public void showConsole(Controller controller) {
+    SimulationController simulationController;
+    public void showConsole(SimulationController simulationController) {
         stage.show();
-        this.controller = controller;
+        this.simulationController = simulationController;
     }
 
     public void hideConsole() {
@@ -33,11 +33,11 @@ public class ConsoleController {
 
     public void command() {
         if (consoleArea.getText().equals("start\n")) {
-            controller.startSimulation();
+            simulationController.startSimulation();
             consoleArea.setText("");
         }
         else if (consoleArea.getText().equals("stop\n")) {
-            controller.pauseSimulation();
+            simulationController.pauseSimulation();
             consoleArea.setText("");
         }
         else

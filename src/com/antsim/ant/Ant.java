@@ -7,9 +7,6 @@ import java.io.*;
 import java.util.*;
 
 
-//todo serializable
-
-
 public abstract class Ant implements IBehavior, Serializable {
 	int posX;
 	int posY;

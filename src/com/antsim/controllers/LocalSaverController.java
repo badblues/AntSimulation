@@ -4,15 +4,23 @@ import com.antsim.ant.Ant;
 import com.antsim.ant.Warrior;
 import com.antsim.model.Habitat;
 import javafx.scene.Group;
+import javafx.stage.FileChooser;
 
 import java.io.*;
 
+//TODO file extensions
+
 public class LocalSaverController {
     private final Habitat model = Habitat.getInstance();
-    private final String fpath = "src/resources/data/ants.bin";
 
     public void saveAll() {
-        try(ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fpath, false))) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save");
+        fileChooser.setInitialDirectory(new File("./"));
+        fileChooser.setInitialFileName("ants.bin");
+        fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("Bin files", "*.bin"));
+        File file = fileChooser.showSaveDialog(Habitat.getInstance().getStage());
+        try(ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file, false))) {
             synchronized (model.getAntsVector()) {
                 for(Ant ant: model.getAntsVector()) {
                     out.writeObject(ant);
@@ -25,7 +33,12 @@ public class LocalSaverController {
     }
 
     public void loadAll(Group antsArea) {
-        try(ObjectInputStream in = new ObjectInputStream(new FileInputStream(fpath))) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Load");
+        fileChooser.setInitialDirectory(new File("./"));
+        fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("Bin files", "*.bin"));
+        File file = fileChooser.showSaveDialog(Habitat.getInstance().getStage());
+        try(ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))) {
             synchronized (model.getAntsVector()) {
                 while(true) {
                     try {
@@ -45,7 +58,7 @@ public class LocalSaverController {
                 in.close();
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
+
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
