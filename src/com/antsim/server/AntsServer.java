@@ -1,16 +1,18 @@
 package com.antsim.server;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
 public class AntsServer {
 
-    static int clientCount = 0;
-    static int lastClientId = 0;
+    static int lastClientId = 1;
     static ArrayList<EchoThread> threadList = new ArrayList<>();
-
+    static public final byte CODE_CLIENTS_UPDATE = 0;
+    static public final byte CODE_ANTS_REQUEST = 1;
+    static public final byte CODE_ANTS_RESPONSE = 2;
     public static void main(String[] args) {
         ServerSocket serverSocket = null;
         Socket socket = null;
@@ -38,17 +40,31 @@ public class AntsServer {
         sendClientsUpdate();
     }
 
-    public static String getClientNames() {
-        StringBuilder names = new StringBuilder();
-        for (EchoThread thread : threadList) {
-            names.append("Client ").append(thread.getClientId()).append("\n");
-        }
-        return names.toString();
+    public static ArrayList<Integer> getClients() {
+        ArrayList<Integer> array = new ArrayList<>();
+        for (EchoThread thread : threadList)
+            array.add(thread.getClientId());
+        return array;
     }
 
     private static void sendClientsUpdate() {
         for (EchoThread thread : threadList) {
             thread.updateClientsList();
         }
+    }
+
+    public static void transferRequest(int recieverId, int senderId, int number) {
+        System.out.println("transfer request");
+        for (EchoThread thread : threadList)
+            if (thread.getClientId() == senderId) {
+                thread.requestAnts(recieverId, senderId, number);
+            }
+    }
+
+    public static void transferResponse(int recieverId, InputStream in) {
+        System.out.println("transfer response");
+        for (EchoThread thread : threadList)
+            if (thread.getClientId() == recieverId)
+                thread.sendAnts(in);
     }
 }

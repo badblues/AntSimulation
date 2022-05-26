@@ -3,6 +3,7 @@ package com.antsim.controllers;
 import com.antsim.ai.WarriorAI;
 import com.antsim.ai.WorkerAI;
 import com.antsim.ant.*;
+import com.antsim.model.AntRequestDialog;
 import com.antsim.model.Console;
 import com.antsim.model.Habitat;
 import com.antsim.view.AlertsView;
@@ -69,10 +70,13 @@ public class SimulationController implements Initializable {
 
 	private boolean canShowStatistics = false;
 	Console console;
+	AntRequestDialog antRequestDialog;
 	ConsoleController consoleController;
+	AntRequestController antRequestController;
+
 	LocalSaverController localSaverController = new LocalSaverController();
 	SQLSaverController sqlSaverController = new SQLSaverController();
-	ClientController clientController = new ClientController(this);
+	ClientController clientController;
 
 
 	@Override
@@ -140,6 +144,11 @@ public class SimulationController implements Initializable {
 
 		console = new Console();
 		consoleController = console.getConsoleController();
+
+		antRequestDialog = new AntRequestDialog();
+		antRequestController = antRequestDialog.getAntRequestController();
+
+		clientController = new ClientController(this, antRequestController, antsArea);
 
 		launchAIThreads();
 		clientController.start();
@@ -337,6 +346,10 @@ public class SimulationController implements Initializable {
 		consoleController.showConsole(this);
 	}
 
+	public void showAntRequestDialog() {
+		antRequestController.showDialog(this);
+	}
+
 
 	public void saveAnts() {
 		localSaverController.saveAll();
@@ -378,8 +391,15 @@ public class SimulationController implements Initializable {
 		sqlSaverController.saveWorkers();
 	}
 
-	public void setCurrentClientsText(String text) {
-		clientsText.setText(text);
+	public void updateClientsText() {
+		ArrayList<Integer> array = Habitat.getInstance().getClientsArray();
+		StringBuilder clients = new StringBuilder("Current client: ");
+		if (!array.isEmpty()) {
+			clients.append(array.get(0)).append("\n");
+			for (int i = 1; i < array.size(); i++)
+				clients.append("Client ").append(array.get(i)).append("\n");
+		}
+		clientsText.setText(clients.toString());
 	}
 
 	private int getNewID() {

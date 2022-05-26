@@ -25,6 +25,7 @@ public class Habitat extends Application {
 	private final Vector<Ant> antsVector = new Vector<>();
 	private final HashSet<Integer> antsIds = new HashSet<>();
 	private final TreeMap<Integer, Integer> antsSpawnTime = new TreeMap<>();
+	private final ArrayList<Integer> clientsArray = new ArrayList<>();
 	private int warriorSpawnChance = 100; //percents
 	private int workerSpawnChance = 100; //percents
 	private int warriorSpawnDelay = 1; // seconds
@@ -83,6 +84,10 @@ public class Habitat extends Application {
 	public TreeMap<Integer, Integer> getAntsSpawnTimeTree() {
         return antsSpawnTime;
     }
+
+	public ArrayList<Integer> getClientsArray() {
+		return clientsArray;
+	}
 
 	public int getWarriorSpawnChance() {
 		return warriorSpawnChance;
@@ -200,6 +205,7 @@ public class Habitat extends Application {
 	public void setMainThreadPriority(int mainThreadPriority) {
 		this.mainThreadPriority = mainThreadPriority;
 	}
+
 
 	public Stage getStage() {
 		return stage;

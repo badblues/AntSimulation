@@ -84,11 +84,11 @@
                   </CheckBox>
                   <Pane layoutX="18.0" layoutY="391.0" prefHeight="312.0" prefWidth="200.0" style="-fx-background-color: linear-gradient(to top, lightgreen, darkgreen);">
                      <children>
-                        <TextArea fx:id="clientsText" opacity="0.33" prefHeight="260.0" prefWidth="200.0" wrapText="true">
+                        <TextArea fx:id="clientsText" editable="false" prefHeight="260.0" prefWidth="200.0" style="-fx-background-color: green;" wrapText="true">
                            <font>
                               <Font name="Franklin Gothic Medium" size="18.0" />
                            </font></TextArea>
-                        <Button fx:id="requestAntsButton" layoutX="39.0" layoutY="273.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="123.0" text="REQUEST ANTS" />
+                        <Button fx:id="requestAntsButton" layoutX="39.0" layoutY="273.0" mnemonicParsing="false" onAction="#showAntRequestDialog" prefHeight="25.0" prefWidth="123.0" text="REQUEST ANTS" />
                      </children>
                   </Pane>
                </children>
