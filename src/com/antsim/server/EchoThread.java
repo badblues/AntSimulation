@@ -22,25 +22,24 @@ public class EchoThread extends Thread {
             try {
                 InputStream inputStream = socket.getInputStream();
                 DataInputStream din = new DataInputStream(inputStream);
-                int i = inputStream.read();
+                int i = din.readInt();
                 System.out.println(id + " got first input: " + i);
                 switch (i) {
-                    case -1:
-                        lostConnection();
-                        break;
-                    case AntsServer.CODE_ANTS_REQUEST:
-                        int senderId = din.readByte();
-                        int number = din.readByte();
-                        System.out.println(id + " got request, me: " + id + " sender " + senderId + " number " + number);
+                    case -1 -> lostConnection();
+                    case AntsServer.CODE_ANTS_REQUEST -> {
+                        int senderId = din.readInt();
+                        int number = din.readInt();
+                        System.out.println(id + " got request: " + id + " sender " + senderId + " number " + number);
                         AntsServer.transferRequest(id, senderId, number);
-                        break;
-                    case AntsServer.CODE_ANTS_RESPONSE:
-                        System.out.println(id + " got response with ants");
-                        int reciever = din.read();
-                        int sender = din.read();
-                        number = din.read();
-                        AntsServer.transferResponse(number, din);
-                        break;
+                    }
+                    case AntsServer.CODE_ANTS_RESPONSE -> {
+                        int reciever = din.readInt();
+                        System.out.println(id + " got response with ants: " + reciever);
+                        ArrayList<Integer> array = new ArrayList<>();
+                        while(din.available() > 0)
+                            array.add(din.readInt());
+                        AntsServer.transferResponse(reciever, array);
+                    }
                 }
             } catch (IOException e) {
                 lostConnection();
@@ -55,11 +54,9 @@ public class EchoThread extends Thread {
         try {
             OutputStream outputStream = socket.getOutputStream();
             DataOutputStream out = new DataOutputStream(outputStream);
-            ByteBuffer bytes = ByteBuffer.allocate(array.size() * 4);
-            out.write(AntsServer.CODE_CLIENTS_UPDATE);
+            out.writeInt(AntsServer.CODE_CLIENTS_UPDATE);
             for (Integer i : array)
-                bytes.putInt(i);
-            out.write(bytes.array());
+                out.writeInt(i);
             out.flush();
         } catch(IOException e) {
             e.printStackTrace();
@@ -70,13 +67,14 @@ public class EchoThread extends Thread {
         return id;
     }
 
-    public void sendAnts(InputStream in) {
+    public void sendAnts(ArrayList<Integer> array) {
         try {
             DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
-            dout.write(AntsServer.CODE_ANTS_RESPONSE);
-            while(in.available() > 0)
-                dout.write(in.read());
+            dout.writeInt(AntsServer.CODE_ANTS_RESPONSE);
+            for (Integer i : array)
+                dout.writeInt(i);
             dout.flush();
+            System.out.println("sent ants to reciever: " + id);
         } catch(IOException e) {
             e.printStackTrace();
         }
@@ -85,11 +83,11 @@ public class EchoThread extends Thread {
     public void requestAnts(int reciever, int sender, int number) {
         try {
             DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
-            System.out.println(id + " Request sent to antsender");
-            dout.write(AntsServer.CODE_ANTS_REQUEST);
-            dout.write((byte)reciever);
-            dout.write((byte)sender);
-            dout.write((byte)number);
+            System.out.println(id + " Request sent to antsender:" + reciever + " " + sender + " " + number);
+            dout.writeInt(AntsServer.CODE_ANTS_REQUEST);
+            dout.writeInt(reciever);
+            dout.writeInt(sender);
+            dout.writeInt(number);
             dout.flush();
         } catch (IOException e) {
             e.printStackTrace();

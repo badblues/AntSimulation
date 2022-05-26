@@ -1,5 +1,6 @@
 package com.antsim.server;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
@@ -10,9 +11,9 @@ public class AntsServer {
 
     static int lastClientId = 1;
     static ArrayList<EchoThread> threadList = new ArrayList<>();
-    static public final byte CODE_CLIENTS_UPDATE = 0;
-    static public final byte CODE_ANTS_REQUEST = 1;
-    static public final byte CODE_ANTS_RESPONSE = 2;
+    static public final int CODE_CLIENTS_UPDATE = 0;
+    static public final int CODE_ANTS_REQUEST = 1;
+    static public final int CODE_ANTS_RESPONSE = 2;
     public static void main(String[] args) {
         ServerSocket serverSocket = null;
         Socket socket = null;
@@ -61,10 +62,10 @@ public class AntsServer {
             }
     }
 
-    public static void transferResponse(int recieverId, InputStream in) {
+    public static void transferResponse(int recieverId, ArrayList<Integer> array) {
         System.out.println("transfer response");
         for (EchoThread thread : threadList)
             if (thread.getClientId() == recieverId)
-                thread.sendAnts(in);
+                thread.sendAnts(array);
     }
 }

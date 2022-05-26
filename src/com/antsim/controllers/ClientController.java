@@ -1,9 +1,10 @@
 package com.antsim.controllers;
 
-import com.antsim.ant.Ant;
-import com.antsim.ant.Warrior;
+import com.antsim.ai.Destination;
+import com.antsim.ant.*;
 import com.antsim.model.Habitat;
 import com.antsim.server.AntsServer;
+import javafx.application.Platform;
 import javafx.scene.Group;
 
 import java.io.*;
@@ -13,6 +14,7 @@ import java.util.Vector;
 
 public class ClientController extends Thread {
 
+    Habitat model = Habitat.getInstance();
     private static Socket socket;
     private final SimulationController simulationController;
     private final AntRequestController antRequestController;
@@ -35,7 +37,7 @@ public class ClientController extends Thread {
                 InputStream inputStream = socket.getInputStream();
                 DataInputStream din = new DataInputStream(inputStream);
                 if (din.available() > 0) {
-                    int i = din.readByte();
+                    int i = din.readInt();
                     switch (i) {
                         case AntsServer.CODE_CLIENTS_UPDATE:
                             readClientsUpdate(din);
@@ -60,9 +62,9 @@ public class ClientController extends Thread {
             System.out.println("sending request");
             OutputStream outputStream = socket.getOutputStream();
             DataOutputStream out = new DataOutputStream(outputStream);
-            out.write(AntsServer.CODE_ANTS_REQUEST);
-            out.write((byte) id);
-            out.write((byte) number);
+            out.writeInt(AntsServer.CODE_ANTS_REQUEST);
+            out.writeInt(id);
+            out.writeInt(number);
             out.flush();
             System.out.println("request sent");
         } catch (IOException e) {
@@ -72,46 +74,39 @@ public class ClientController extends Thread {
 
     private void readAnts() {
         System.out.println("got ants from server");
-        Habitat model = Habitat.getInstance();
         try {
-            ObjectInputStream oin = new ObjectInputStream(socket.getInputStream());
+            DataInputStream din = new DataInputStream(socket.getInputStream());
             synchronized (model.getAntsVector()) {
-                while(oin.available() > 0) {
-                    Ant ant = (Ant) oin.readObject();
-                    ant.spawn(antsArea, model.getTime(), ant.getLifeTime(), ant.getId());
-                    model.getAntsVector().add(ant);
-                    model.getAntsIdsHashSet().add(ant.getId());
-                    model.getAntsSpawnTimeTree().put(ant.getId(), model.getTime());
-                    if (ant instanceof Warrior)
-                        model.increaseWarriorCount(1);
+                while(din.available() > 0) {
+                    if (din.readInt() == 1)
+                        loadAntWarrior(din, antsArea);
                     else
-                        model.increaseWorkerCount(1);
+                        loadAntWorker(din, antsArea);
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
         }
     }
 
     private void sendAnts(DataInputStream din) {
         try {
-            ObjectOutputStream oout = new ObjectOutputStream(socket.getOutputStream());
-            int reciever = din.readByte();
-            int sender = din.readByte();
-            int number = din.readByte();
+            DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
+            int reciever = din.readInt();
+            int sender = din.readInt();
+            int number = din.readInt();
             System.out.println("requested: " + reciever + " "  + sender + " " + number);
-            oout.write(AntsServer.CODE_ANTS_RESPONSE);
-            oout.write(reciever);
-            oout.write(sender);
-            oout.write(number);
-            synchronized (Habitat.getInstance().getAntsVector()) {
-                Vector<Ant> antsVector = Habitat.getInstance().getAntsVector();
-                for (int i = 0; i < antsVector.size() && i < number; i++);
-                    //oout.writeObject(antsVector.get(i));
+            dout.writeInt(AntsServer.CODE_ANTS_RESPONSE);
+            dout.writeInt(reciever);
+            synchronized (model.getAntsVector()) {
+                Vector<Ant> antsVector = model.getAntsVector();
+                for (int i = 0; i < antsVector.size() && i < number; i++)
+                    if (antsVector.get(i) instanceof Warrior)
+                        saveAntWarrior(dout, (Warrior)antsVector.get(i));
+                    else
+                        saveAntWorker(dout, (Worker)antsVector.get(i));
             }
-            oout.flush();
+            dout.flush();
             System.out.println("ants sent");
         } catch (IOException e) {
             e.printStackTrace();
@@ -119,26 +114,81 @@ public class ClientController extends Thread {
     }
 
     private void readClientsUpdate(DataInputStream in) throws IOException {
-        ByteBuffer buffer = ByteBuffer.allocate(256);
-        while (in.available() > 0) {
-            buffer.put((byte) in.read());
-            if (in.available() == 0) {
-                synchronized (Habitat.getInstance().getClientsArray()) {
-                    Habitat.getInstance().getClientsArray().clear();
-                    buffer.rewind();
-                    int i;
-                    while ((i = buffer.getInt()) != 0) {
-                        Habitat.getInstance().getClientsArray().add(i);
-                    }
-                }
-                updateClients();
+        synchronized (model.getClientsArray()) {
+            model.getClientsArray().clear();
+            while (in.available() > 0) {
+                model.getClientsArray().add(in.readInt());
             }
+            updateClients();
         }
     }
 
     private void updateClients() {
         simulationController.updateClientsText();
         antRequestController.updateClients();
+    }
+
+    private void saveAntWarrior(DataOutputStream out, Warrior ant) throws IOException {
+        out.writeInt(1);
+        saveAnt(out, ant);
+        out.writeInt((int)(ant.getMovementAngle() * 180 / Math.PI));
+        out.writeInt(ant.getMovementDirection());
+    }
+
+    private void saveAntWorker(DataOutputStream out, Worker ant) throws IOException {
+        out.writeInt(0);
+        saveAnt(out, ant);
+        out.writeInt(ant.getDestination().ordinal());
+    }
+
+    private void saveAnt(DataOutputStream out, Ant ant) throws IOException {
+        out.writeInt(ant.getPosX());
+        out.writeInt(ant.getPosY());
+        out.writeInt(ant.getSpawnX());
+        out.writeInt(ant.getSpawnY());
+        out.writeInt(ant.getLifeTime() - (model.getTime() - ant.getSpawnTime()));  //lifeTime
+        out.writeInt(ant.getId());
+    }
+
+    private void loadAntWarrior(DataInputStream in, Group antsArea) throws IOException {
+        int posX = in.readInt();
+        int posY = in.readInt();
+        int spawnX = in.readInt();
+        int spawnY = in.readInt();
+        int lifeTime = in.readInt();
+        int id = in.readInt();
+        double movementAngle = in.readInt() * Math.PI/180;
+        int movementDirection = in.readInt();
+        Warrior a = new Warrior(posX, posY, spawnX, spawnY, movementAngle, movementDirection);
+        Platform.runLater(
+                () -> {
+                    a.spawn(antsArea, model.getTime(), lifeTime, id);
+                }
+        );
+        model.getAntsVector().add(a);
+        model.getAntsIdsHashSet().add(id);
+        model.getAntsSpawnTimeTree().put(id, model.getTime());
+        model.setWarriorCount(model.getWarriorCount() + 1);
+    }
+
+    private void loadAntWorker(DataInputStream in, Group antsArea) throws IOException {
+        int posX = in.readInt();
+        int posY = in.readInt();
+        int spawnX = in.readInt();
+        int spawnY = in.readInt();
+        int lifeTime = in.readInt();
+        int id = in.readInt();
+        int destination = in.readInt();
+        Worker a = new Worker(posX, posY, spawnX, spawnY, destination == 0 ? Destination.HOME : Destination.SPAWN);
+        Platform.runLater(
+                () -> {
+                    a.spawn(antsArea, model.getTime(), lifeTime, id);
+                }
+        );
+        model.getAntsVector().add(a);
+        model.getAntsIdsHashSet().add(id);
+        model.getAntsSpawnTimeTree().put(id, model.getTime());
+        model.setWorkerCount(model.getWorkerCount() + 1);
     }
 
 }
