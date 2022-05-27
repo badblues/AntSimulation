@@ -72,23 +72,6 @@ public class ClientController extends Thread {
         }
     }
 
-    private void readAnts() {
-        System.out.println("got ants from server");
-        try {
-            DataInputStream din = new DataInputStream(socket.getInputStream());
-            synchronized (model.getAntsVector()) {
-                while (din.available() > 0) {
-                    if (din.readInt() == 1)
-                        loadAntWarrior(din, antsArea);
-                    else
-                        loadAntWorker(din, antsArea);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void sendAnts(DataInputStream din) {
         try {
             DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
@@ -98,8 +81,10 @@ public class ClientController extends Thread {
             System.out.println("requested: " + reciever + " " + sender + " " + number);
             dout.writeInt(AntsServer.CODE_ANTS_RESPONSE);
             dout.writeInt(reciever);
+            ///
+            Vector<Ant> antsVector = model.getAntsVector();
+            dout.writeInt(Math.min(antsVector.size(), number));
             synchronized (model.getAntsVector()) {
-                Vector<Ant> antsVector = model.getAntsVector();
                 for (int i = 0; i < antsVector.size() && i < number; i++)
                     if (antsVector.get(i) instanceof Warrior)
                         saveAntWarrior(dout, (Warrior) antsVector.get(i));
@@ -108,6 +93,25 @@ public class ClientController extends Thread {
             }
             dout.flush();
             System.out.println("ants sent");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void readAnts() {
+        System.out.println("got ants from server");
+        try {
+            DataInputStream din = new DataInputStream(socket.getInputStream());
+            int number = din.readInt();
+            System.out.println("number: " + number);
+            synchronized (model.getAntsVector()) {
+                for (int i = 0; i < number; i ++) {
+                    if (din.readInt() == 1)
+                        loadAntWarrior(din, antsArea);
+                    else
+                        loadAntWorker(din, antsArea);
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
