@@ -195,6 +195,11 @@
                         </Menu>
                     </items>
                   </Menu>
+                  <Menu mnemonicParsing="false" text="Connection">
+                    <items>
+                      <MenuItem mnemonicParsing="false" onAction="#connectToLocalhost" text="Connect to localhost" />
+                    </items>
+                  </Menu>
                </menus>
             </MenuBar>
          </children>

@@ -23,7 +23,6 @@ public class EchoThread extends Thread {
                 InputStream inputStream = socket.getInputStream();
                 DataInputStream din = new DataInputStream(inputStream);
                 int i = din.readInt();
-                System.out.println(id + " got first input: " + i);
                 switch (i) {
                     case -1 -> lostConnection();
                     case AntsServer.CODE_ANTS_REQUEST -> {

@@ -77,7 +77,7 @@ public class ClientController extends Thread {
         try {
             DataInputStream din = new DataInputStream(socket.getInputStream());
             synchronized (model.getAntsVector()) {
-                while(din.available() > 0) {
+                while (din.available() > 0) {
                     if (din.readInt() == 1)
                         loadAntWarrior(din, antsArea);
                     else
@@ -95,16 +95,16 @@ public class ClientController extends Thread {
             int reciever = din.readInt();
             int sender = din.readInt();
             int number = din.readInt();
-            System.out.println("requested: " + reciever + " "  + sender + " " + number);
+            System.out.println("requested: " + reciever + " " + sender + " " + number);
             dout.writeInt(AntsServer.CODE_ANTS_RESPONSE);
             dout.writeInt(reciever);
             synchronized (model.getAntsVector()) {
                 Vector<Ant> antsVector = model.getAntsVector();
                 for (int i = 0; i < antsVector.size() && i < number; i++)
                     if (antsVector.get(i) instanceof Warrior)
-                        saveAntWarrior(dout, (Warrior)antsVector.get(i));
+                        saveAntWarrior(dout, (Warrior) antsVector.get(i));
                     else
-                        saveAntWorker(dout, (Worker)antsVector.get(i));
+                        saveAntWorker(dout, (Worker) antsVector.get(i));
             }
             dout.flush();
             System.out.println("ants sent");
@@ -131,7 +131,7 @@ public class ClientController extends Thread {
     private void saveAntWarrior(DataOutputStream out, Warrior ant) throws IOException {
         out.writeInt(1);
         saveAnt(out, ant);
-        out.writeInt((int)(ant.getMovementAngle() * 180 / Math.PI));
+        out.writeInt((int) (ant.getMovementAngle() * 180 / Math.PI));
         out.writeInt(ant.getMovementDirection());
     }
 
@@ -157,14 +157,10 @@ public class ClientController extends Thread {
         int spawnY = in.readInt();
         int lifeTime = in.readInt();
         int id = in.readInt();
-        double movementAngle = in.readInt() * Math.PI/180;
+        double movementAngle = in.readInt() * Math.PI / 180;
         int movementDirection = in.readInt();
         Warrior a = new Warrior(posX, posY, spawnX, spawnY, movementAngle, movementDirection);
-        Platform.runLater(
-                () -> {
-                    a.spawn(antsArea, model.getTime(), lifeTime, id);
-                }
-        );
+        Platform.runLater(() -> a.spawn(antsArea, model.getTime(), lifeTime, id));
         model.getAntsVector().add(a);
         model.getAntsIdsHashSet().add(id);
         model.getAntsSpawnTimeTree().put(id, model.getTime());
@@ -180,11 +176,7 @@ public class ClientController extends Thread {
         int id = in.readInt();
         int destination = in.readInt();
         Worker a = new Worker(posX, posY, spawnX, spawnY, destination == 0 ? Destination.HOME : Destination.SPAWN);
-        Platform.runLater(
-                () -> {
-                    a.spawn(antsArea, model.getTime(), lifeTime, id);
-                }
-        );
+        Platform.runLater(() -> a.spawn(antsArea, model.getTime(), lifeTime, id));
         model.getAntsVector().add(a);
         model.getAntsIdsHashSet().add(id);
         model.getAntsSpawnTimeTree().put(id, model.getTime());

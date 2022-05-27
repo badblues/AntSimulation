@@ -148,10 +148,7 @@ public class SimulationController implements Initializable {
 		antRequestDialog = new AntRequestDialog();
 		antRequestController = antRequestDialog.getAntRequestController();
 
-		clientController = new ClientController(this, antRequestController, antsArea);
-
 		launchAIThreads();
-		clientController.start();
 	}
 
 	public void startSimulation() {
@@ -389,6 +386,11 @@ public class SimulationController implements Initializable {
 
 	public void exportWorkersToDB() {
 		sqlSaverController.saveWorkers();
+	}
+
+	public void connectToLocalhost() {
+		clientController = new ClientController(this, antRequestController, antsArea);
+		clientController.start();
 	}
 
 	public void updateClientsText() {
