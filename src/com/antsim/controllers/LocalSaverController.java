@@ -8,8 +8,6 @@ import javafx.stage.FileChooser;
 
 import java.io.*;
 
-//TODO file extensions
-
 public class LocalSaverController {
     private final Habitat model = Habitat.getInstance();
 

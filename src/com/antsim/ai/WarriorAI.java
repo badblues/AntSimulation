@@ -32,7 +32,7 @@ public class WarriorAI extends BaseAI{
 				}
 			}
 			try {
-				sleep(50);
+				sleep(40);
 			} catch(InterruptedException e) {
 				e.printStackTrace();
 			}

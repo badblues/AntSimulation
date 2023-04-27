@@ -44,8 +44,6 @@ public class WorkerAI extends BaseAI{
 		}
 	}
 
-	//TODO refactor repeating code
-
 	private void move(Worker worker) {
 		int x = worker.getPosX();
 		int y = worker.getPosY();
